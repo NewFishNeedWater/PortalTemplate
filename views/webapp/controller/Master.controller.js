@@ -84,36 +84,16 @@ sap.ui.define([
 		getC4CContact: function() {
 			var userEmail = sap.ushell.Container.getUser().getEmail(),
 				model = this.getView().getModel(),
-				url = model.sServiceUrl + "/ContactCommunicationDataCollection?$format=json&$expand=AccountContactRelationship&$filter=EMail eq %27" + userEmail + "%27";
-
+				url = "/client/getC4CContact?userEmail="+userEmail;
 			$.ajax({
 				method: "GET",
 				url: url,
-				success: function(data) {
-					var results = data.d.results;
-					if (results.length > 0) {
-						this.component.contactUUID = results[0].AccountContactRelationship.ContactUUID;
-						var href = "ContactCollection?$format=json&$filter=ObjectID eq %27" + this.component.contactUUID.split("-").join("") + "%27";
-						url = model.sServiceUrl + "/" + href;
-						$.ajax({
-							method: "GET",
-							url: url,
-							success: function(result) {
-								this.contactID = result.d.results[0].ContactID;
-								var view = this.getView();
-								view.byId("addButton").setEnabled(true);
-								view.byId("downloadButton").setEnabled(true);
-							}.bind(this),
-							error: function(jqXHR) {
-								var elm = jqXHR.responseXML.getElementsByTagName("message")[0];
-								var error = elm.innerHTML || elm.textContent;
-								MessageBox.error(error);
-							}
-						});
-					} else {
-						MessageToast.show("You cannot view or create tickets because your email " + userEmail + " is not assigned to a contact in the C4C tenant");
-					}
-				}.bind(this),
+				success: function(result) {
+                this.contactID = result[0].ContactID;
+                var view = this.getView();
+                view.byId("addButton").setEnabled(true);
+                view.byId("downloadButton").setEnabled(true);
+            }.bind(this),
 				error: function(jqXHR) {
 					var elm = jqXHR.responseXML.getElementsByTagName("message")[0];
 					var error = elm.innerHTML || elm.textContent;

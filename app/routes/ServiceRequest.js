@@ -1,23 +1,14 @@
 var express = require('express');
 var router = express.Router();
 
+const c4cBackEndHandler = require(process.cwd() + '/app/handler/ContactCommunicationDataHandler.js');
 
-router.get('/getCollection', function(req, res) {
-
-  let oItems = [
-      {name: 'JoeyTest', location : 'testtest'},
-      {name: 'JoeyTest11', location : 'testtest11'},
-  ];
-  res.send(oItems);
-});
-
-router.get('/index', function(req, res, next) {
-
+//display index page
+router.get('/index', function(req, res) {
     res.render('index');
-
 });
 
-
+router.get('/getC4CContact',c4cBackEndHandler.getContactCommunicationData);
 
 
 module.exports = router;

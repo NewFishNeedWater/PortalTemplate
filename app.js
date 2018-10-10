@@ -9,11 +9,6 @@ const serviceRequestRouter = require('./app/routes/ServiceRequest');
 
 const app = express();
 
-//app.set('port',process.env.PORT || 4000);
-app.listen(4000);
-console.log('Listening on port '+ process.env.PORT || 4000);
-
-
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
