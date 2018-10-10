@@ -83,8 +83,7 @@ sap.ui.define([
 
 		getC4CContact: function() {
 			var userEmail = sap.ushell.Container.getUser().getEmail(),
-				model = this.getView().getModel(),
-				url = "/client/getC4CContact?userEmail="+userEmail;
+				url ="/client/getC4CContact?userEmail="+userEmail;
 			$.ajax({
 				method: "GET",
 				url: url,

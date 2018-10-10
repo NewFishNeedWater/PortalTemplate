@@ -15,23 +15,23 @@ const ACTIVE_DESINATION = process.env.ACTIVE_DESINATION;
 
 function getActiveProperty(){
   return DESTINATION_MAP[ACTIVE_DESINATION] || DESTINATION_MAP.default;
-};
+}
 
 function setProperty(host,key,value){
   DESTINATION_MAP[host][key] = value;
-};
+}
 
 function setDest(host,value){
   DESTINATION_MAP[host] = value;
-};
+}
 
 function getAll(){
   return DESTINATION_MAP;
-};
+}
 
 module.exports = {
   getActiveProperty,
   setProperty,
   setDest,
   getAll
-}
+};

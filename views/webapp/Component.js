@@ -60,11 +60,10 @@ sap.ui.define([
 				});
 				this.setModel(model);
 			} else {
-				this.setModel(new ODataModel(jQuery.sap.getModulePath("ServiceRequests") +
-					"/destinations/c4c/sap/byd/odata/v1/c4codata/", {
+				/*this.setModel(new ODataModel("/client/c4codata", {
 					useBatch: false
 				}));
-				this._oErrorHandler = new ErrorHandler(this);
+				this._oErrorHandler = new ErrorHandler(this);*/
 			}
 
 			this.oListSelector = new ListSelector();

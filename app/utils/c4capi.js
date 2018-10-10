@@ -103,5 +103,6 @@ function requestEndfunction(error,data,resolve,reject){
 
 
 module.exports = {
-    fetchODataData
+    fetchODataData,
+    fetchToken
 }
