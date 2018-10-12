@@ -23,12 +23,12 @@ sap.ui.define([
 					oViewModel.setProperty("/delay", iOriginalBusyDelay);
 				};
 
-				if (!this.getOwnerComponent().mockData) {
-					this.getOwnerComponent().getModel().metadataLoaded()
-						.then(fnSetAppNotBusy);
-				} else {
-					fnSetAppNotBusy();
-				}
+				// if (!this.getOwnerComponent().mockData) {
+				// 	this.getOwnerComponent().getModel().metadataLoaded()
+				// 		.then(fnSetAppNotBusy);
+				// } else {
+				// 	fnSetAppNotBusy();
+				// }
 
 				// Makes sure that master view is hidden in split app
 				// after a new list entry has been selected.

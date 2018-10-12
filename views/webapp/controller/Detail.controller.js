@@ -11,8 +11,9 @@ sap.ui.define([
 	'sap/ui/comp/valuehelpdialog/ValueHelpDialog',
 	'sap/ui/table/Table',
 	'sap/ui/comp/filterbar/FilterBar',
-	"sap/ui/core/routing/History"
-], function(BaseController, JSONModel, formatter, FeedListItem, MessageBox, MessageToast, StandardListItem, ListType, ODataModel, ValueHelpDialog, Table, FilterBar, History) {
+	"sap/ui/core/routing/History",
+    "ServiceRequests/controller/UtilityHandler",
+], function(BaseController, JSONModel, formatter, FeedListItem, MessageBox, MessageToast, StandardListItem, ListType, ODataModel, ValueHelpDialog, Table, FilterBar, History, UtilityHandler) {
 	"use strict";
 
 	return BaseController.extend("ServiceRequests.controller.Detail", {
@@ -36,6 +37,7 @@ sap.ui.define([
 			this.createNewTicket = false;
 			var oView = this.getView();
 			var _self = this;
+			this.utilityHandler = new UtilityHandler();
 			this.getRouter().getRoute("object").attachPatternMatched(this._onObjectMatched, this);
 			this.setModel(oViewModel, "detailView");
 			var isMock = this.getOwnerComponent().mockData;
@@ -54,7 +56,7 @@ sap.ui.define([
 				});
 				this.setModel(mockModel, "MockModel");
 			} else {
-				this.getOwnerComponent().getModel().metadataLoaded().then(this._onMetadataLoaded.bind(this));
+				// this.getOwnerComponent().getModel().metadataLoaded().then(this._onMetadataLoaded.bind(this));
 			}
 			var URLS = this.getOwnerComponent().SELECT_BOX_URLS;
 			this.app = this.getOwnerComponent().getAggregation("rootControl");
@@ -68,11 +70,16 @@ sap.ui.define([
 			} else {
 				var url = jQuery.sap.getModulePath("ServiceRequests") + "/destinations/c4c/sap/byd/odata/v1/c4codata/";
 				var incidentModel = new JSONModel({results: []});
-				var oModel = new ODataModel(url, {json: true, useBatch: false});
-				oModel.read(URLS.ServicePriorityCode, {
-					success: _self.infoPriorityReceived.bind(_self),
-					error: _self.onErrorODataRead
-				});
+				// var oModel = new ODataModel(url, {json: true, useBatch: false});
+				// oModel.read(URLS.ServicePriorityCode, {
+				// 	success: _self.infoPriorityReceived.bind(_self),
+				// 	error: _self.onErrorODataRead
+				// });
+				var oModel = new JSONModel();
+                this.utilityHandler.oModelRead(oModel, './getServicePriorityCode', {
+                    success: _self.infoPriorityReceived.bind(_self),
+                    error: _self.onErrorODataRead
+                });
 				this.setModel(oModel, "ServiceRequest");
 				this.setModel(incidentModel, "IncidentModel");
 			}
@@ -97,7 +104,8 @@ sap.ui.define([
 		},
 		infoPriorityReceived: function(oData) {
 			var hiddenPriorityCodes = this.getOwnerComponent().getManifest()['sap.cloud.portal'].settings.hiddenPriorityCodes,
-				priorityData = oData.results,
+				//priorityData = oData.results,
+                priorityData = oData,
 				filteredPriorityData = [];
 			if (hiddenPriorityCodes) {
 				for (var i = 0; i < priorityData.length; i++) {
@@ -129,6 +137,9 @@ sap.ui.define([
 				var url = model.sServiceUrl + sPath + "/ServiceRequestDescription",
 					token = model.getSecurityToken();
 				this.app.setBusy(true);
+
+
+                //TODO: migrate to node js?
 				jQuery.ajax({
 					url: url,
 					method: "POST",
@@ -218,6 +229,7 @@ sap.ui.define([
 				var sPath = view.getElementBinding().getPath(),
 					url = model.sServiceUrl + sPath,
 					token = model.getSecurityToken();
+				//TODO: migrate to node js?
 				jQuery.ajax({
 					url: url,
 					method: "PATCH",
@@ -255,6 +267,7 @@ sap.ui.define([
 			var sPath = oView.getElementBinding().getPath(),
 				url = oModel.sServiceUrl + sPath,
 				token = oModel.getSecurityToken();
+			//TODO to set to node js
 			jQuery.ajax({
 				url: url,
 				method: "PATCH",
@@ -303,6 +316,7 @@ sap.ui.define([
 					Name: this.fileToUpload.name,
 					Binary: window.btoa(e.target.result)
 				};
+				//TODO to migrate to node js?
 				jQuery.ajax({
 					url: url,
 					method: "POST",
@@ -365,11 +379,18 @@ sap.ui.define([
 				var incidentModel = mockModelData.ServiceRequest.IncidentModel;
 				this.initIncidentModel(incidentModel[parentObject]);
 			} else {
-				oModel.read(URLS.ServiceCategory, {
-                    filters: this.getOwnerComponent().createIncidentCategoryFilters(parentObject, typeCode),
-					success: _self.initIncidentModel.bind(_self),
-					error: _self.onErrorIncidentModel.bind(_self)
-				});
+
+                this.utilityHandler.oModelRead(oModel, URLS.ServiceCategory, {
+                    filters: _self.getOwnerComponent().createIncidentCategoryFilters(parentObject, typeCode),
+                    success: _self.initIncidentModel.bind(_self),
+                    error: _self.onErrorIncidentModel.bind(_self)
+                });
+
+				// oModel.read(URLS.ServiceCategory, {
+                 //    filters: this.getOwnerComponent().createIncidentCategoryFilters(parentObject, typeCode),
+				// 	success: _self.initIncidentModel.bind(_self),
+				// 	error: _self.onErrorIncidentModel.bind(_self)
+				// });
 			}
 
 		},
