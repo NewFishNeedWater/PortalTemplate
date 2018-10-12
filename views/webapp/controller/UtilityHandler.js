@@ -33,20 +33,16 @@ sap.ui.define([
                 },
                 dataType:'json',
             }).done(function(data) {
-                if (data.results.status * 1 < 300) {
-                    // In case success
-                    oModel.setData(data);
-                    oModel.refresh();
-                    if(oSettings.success){
-                        oSettings.success(data);
-                    }
-                } else {
-                    // In case error
-                    if(oSettings.error){
-                        oSettings.error(data);
-                    }
+                oModel.setData(data);
+                oModel.refresh();
+                if(oSettings.success){
+                    oSettings.success(data);
                 }
-            }.bind(this));
+            }.bind(this)).fail(function(data){
+                if(oSettings.error){
+                    oSettings.error(data);
+                }
+            });
         },
 
         /**

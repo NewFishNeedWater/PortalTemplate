@@ -9,8 +9,9 @@ sap.ui.define([
 	"sap/m/GroupHeaderListItem",
 	"sap/m/MessageBox",
 	"sap/m/MessageToast",
-	"ServiceRequests/model/formatter"
-], function(BaseController, JSONModel, Filter, FilterOperator, Device, Export, ExportTypeCSV, GroupHeaderListItem, MessageBox, MessageToast, formatter) {
+	"ServiceRequests/model/formatter",
+    "ServiceRequests/controller/UtilityHandler",
+], function(BaseController, JSONModel, Filter, FilterOperator, Device, Export, ExportTypeCSV, GroupHeaderListItem, MessageBox, MessageToast, formatter, UtilityHandler) {
 	"use strict";
 	/*global $*/
 
@@ -43,6 +44,7 @@ sap.ui.define([
 				// so it can be restored later on. Busy handling on the master list is
 				// taken care of by the master list itself.
 				iOriginalBusyDelay = oList.getBusyIndicatorDelay();
+			this.utilityHandler = new UtilityHandler();
 			var eventBus = sap.ui.getCore().getEventBus();
 			eventBus.subscribe("Detail", "DetailHasRendered", function() {
 			});
@@ -82,6 +84,7 @@ sap.ui.define([
 		},
 
 		getC4CContact: function() {
+			//TODO migrate into node js??
 			var userEmail = sap.ushell.Container.getUser().getEmail(),
 				url ="/client/getC4CContact?userEmail="+userEmail;
 			$.ajax({
@@ -117,7 +120,17 @@ sap.ui.define([
 				var incidentModel = mockModelData.IncidentModel;
 				this.initIncidentModel(incidentModel[parentObject]);
 			} else {
-                oModel.read(URLS.ServiceCategory, {
+                // oModel.read(URLS.ServiceCategory, {
+                //     filters: this.getOwnerComponent().createIncidentCategoryFilters(parentObject, typeCode),
+                //     success: _self.initIncidentModel.bind(_self),
+                //     error: function(jqXHR) {
+                //         var error = jqXHR.responseJSON.error.message.value;
+                //         MessageBox.error(error);
+                //         sap.ui.getCore().byId("createIncidentCategory").setBusy(false);
+                //     }
+                // });
+
+                this.utilityHandler.oModelRead(oModel, URLS.ServiceCategory, {
                     filters: this.getOwnerComponent().createIncidentCategoryFilters(parentObject, typeCode),
                     success: _self.initIncidentModel.bind(_self),
                     error: function(jqXHR) {
@@ -328,7 +341,13 @@ sap.ui.define([
 				var selectedData = oEvent.getParameter("data").results[0],
 					URLS = this.getOwnerComponent().SELECT_BOX_URLS;
 
-                serviceRequestModel.read(URLS.ServiceCategory, {
+                // serviceRequestModel.read(URLS.ServiceCategory, {
+                //     filters: this.getOwnerComponent().createIncidentCategoryFilters(selectedData.ParentObjectID, selectedData.TypeCode),
+                //     success: this.onIncidentLoaded.bind(this),
+                //     error: this.onIncidentFailed.bind(this)
+                // });
+
+                this.utilityHandler.oModelRead(serviceRequestModel,URLS.ServiceCategory, {
                     filters: this.getOwnerComponent().createIncidentCategoryFilters(selectedData.ParentObjectID, selectedData.TypeCode),
                     success: this.onIncidentLoaded.bind(this),
                     error: this.onIncidentFailed.bind(this)
@@ -505,6 +524,7 @@ sap.ui.define([
 
 			this.oDialog.setBusy(true);
 			if (!this.mockData) {
+				//TODO migrate to node js??
 				var model = view.getModel(),
 					url = model.sServiceUrl + "/ServiceRequestCollection",
 					token = model.getSecurityToken();
@@ -550,6 +570,7 @@ sap.ui.define([
 					url = baseUrl + "/ServiceRequestDescription",
 					text = sap.ui.getCore().byId("createDescription").getValue(),
 					token = model.getSecurityToken();
+                //TODO migrate to node js??
 				jQuery.ajax({
 					url: url,
 					method: "POST",
@@ -606,6 +627,7 @@ sap.ui.define([
 					Name: this.fileToUpload.name,
 					Binary: window.btoa(e.target.result)
 				};
+                //TODO migrate to node js??
 				jQuery.ajax({
 					url: url,
 					method: "POST",
@@ -716,7 +738,7 @@ sap.ui.define([
 				}
 			}
 
-			this._oList.getBinding("items").filter(this._oListFilterState.aFilter, "Application");
+			//this._oList.getBinding("items").filter(this._oListFilterState.aFilter, "Application");
 		},
 
 		onDownload: function() {
@@ -859,6 +881,7 @@ sap.ui.define([
 		 * @private
 		 */
 		_applyFilterSearch: function() {
+			// TODO to check this logic?
 			var aFilters = this._oListFilterState.aSearch.concat(this._oListFilterState.aFilter),
 				oViewModel = this.getModel("masterView");
 			this._oList.getBinding("items").filter(aFilters, "Application");

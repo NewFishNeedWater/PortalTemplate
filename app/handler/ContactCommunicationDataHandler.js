@@ -11,7 +11,7 @@ function getContactCommunicationData (req, res){
           let service = c4cconfig.BYD_ODATA + '/ContactCollection';
           let path = "$format=json&$filter=ObjectID eq %27" + sUUID.split("-").join("") + "%27";
           c4capi.fetchODataData(service,path).then(function(oContact){
-              res.send(oContact);
+              res.status(200).send(oContact);
           });
       }
   });
