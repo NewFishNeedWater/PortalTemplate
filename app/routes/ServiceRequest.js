@@ -15,7 +15,8 @@ router.get('/getC4CContact',contactCommunicationHandler.getContactCommunicationD
 router.get('/getServicePriorityCode',serviceRequestHandler.getServicePriorityCode);
 router.get('/getServiceCategory',serviceRequestHandler.getServiceCategory);
 router.get('/getServiceRequestLifeCycleStatusCode',serviceRequestHandler.getServiceRequestLifeCycleStatusCode);
-router.get('/getServiceRequestDescription', serviceRequestHandler.getServiceRequestDescription)
+router.get('/getServiceRequestDescription', serviceRequestHandler.getServiceRequestDescription);
+router.get('/getServiceRequests', serviceRequestHandler.getServiceRequests)
 
 
 

@@ -27,6 +27,14 @@ function getServiceCategory(req, res){
     });
 }
 
+function getServiceRequests(req, res){
+    let service = c4cconfig.BYD_ODATA + 'c4codata';
+    let path = "ServiceRequestCollection";
+    c4capi.fetchODataData(service, path).then(function(response) {
+        res.status(200).send(response);
+    });
+}
+
 function getServiceRequestDescription(req, res){
 
 }
@@ -35,6 +43,7 @@ module.exports = {
     getServicePriorityCode,
     getServiceRequestLifeCycleStatusCode,
     getServiceCategory,
-    getServiceRequestDescription
+    getServiceRequestDescription,
+    getServiceRequests
 
 };

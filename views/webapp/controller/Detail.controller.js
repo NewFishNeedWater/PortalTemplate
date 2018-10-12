@@ -542,9 +542,9 @@ sap.ui.define([
 			oView.getModel("AttachmentModel").refresh();
 			var listItems = list.getItems(),
 				mockData = this.getOwnerComponent().mockData;
-			for (var i = 0; i < listItems.length; i++) {
+		/*	for (var i = 0; i < listItems.length; i++) {
 				listItems[i].data("uri", mockData ? (attachments[i].__metadata ? attachments[i].__metadata.uri + "/Binary/$value" : attachments[i]) : attachments[i].__metadata.uri + "/Binary/$value");
-			}
+			}*/
 			this.app.setBusy(false);
 		},
 		_onMetadataLoaded: function() {

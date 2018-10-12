@@ -10,7 +10,7 @@ sap.ui.define([
          * Utility method: Read data from server and render oModel
          * @param {JSONModel}oModel
          * @param {string}baseURL
-         * @param {object}oSettings
+         * @param {object}oSettingsUtilityHandler
          *         ----{function} success: success call back method
          *         ----{function} error: error call back method
          *         ----{array} filters: filter table
@@ -32,15 +32,18 @@ sap.ui.define([
                     request.setRequestHeader("Type", "application/json");
                 },
                 dataType:'json',
-            }).done(function(data) {
-                oModel.setData(data);
-                oModel.refresh();
-                if(oSettings.success){
-                    oSettings.success(data);
-                }
-            }.bind(this)).fail(function(data){
-                if(oSettings.error){
-                    oSettings.error(data);
+                success: function(oData){
+                    oModel.setData(oData);
+                    oModel.refresh();
+                    if(oSettings.success){
+                        oSettings.success(oData);
+                    }
+                }.bind(this),
+                error: function(jqXHR){
+                    var elm = jqXHR.responseXML.getElementsByTagName("message")[0];
+                    var error = elm.innerHTML || elm.textContent;
+                    //MessageBox.error(error);
+                    oSettings.error(error);
                 }
             });
         },

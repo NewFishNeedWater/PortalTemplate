@@ -738,7 +738,7 @@ sap.ui.define([
 				}
 			}
 
-			//this._oList.getBinding("items").filter(this._oListFilterState.aFilter, "Application");
+			this._oList.getBinding("items").filter(this._oListFilterState.aFilter, "Application");
 		},
 
 		onDownload: function() {

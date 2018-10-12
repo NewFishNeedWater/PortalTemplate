@@ -60,10 +60,54 @@ sap.ui.define([
 				});
 				this.setModel(model);
 			} else {
-				/*this.setModel(new ODataModel("/client/c4codata", {
+                /*var model = new JSONModel(jQuery.sap.getModulePath("ServiceRequests") + "/mock/c4codata.json");
+                model.attachRequestCompleted(function() {
+                    this.getData().ServiceRequestCollection.forEach(function(request) {
+                        request.ServiceRequestDescription.forEach(function(description) {
+                            description.CreatedOn = new Date(parseInt(description.CreatedOn.substring(description.CreatedOn.indexOf("(") + 1, description.CreatedOn.indexOf(")"))));
+                        });
+                    });
+                });
+
+                this.setModel(model);*/
+                this.mockData = true;
+                var model = new JSONModel();
+                //TODO migrate into node js??
+                var url ="/client/getServiceRequests";
+                $.ajax({
+                    method: "GET",
+                    url: url,
+                    async:false,
+                    success: function(result) {
+                        if(result){
+                            result.forEach(function(oServiceRequest) {
+                                if(oServiceRequest.ServiceRequestDescription.length>0){
+                                    oServiceRequest.ServiceRequestDescription.forEach(function(description) {
+                                        description.CreatedOn = new Date(parseInt(description.CreatedOn.substring(description.CreatedOn.indexOf("(") + 1, description.CreatedOn.indexOf(")"))));
+                                    });
+                                }
+                            });
+                        }
+                        model.setData({"ServiceRequestCollection":result});
+                        model.refresh();
+
+                    }.bind(this),
+                    error: function(jqXHR) {
+                        var elm = jqXHR.responseXML.getElementsByTagName("message")[0];
+                        var error = elm.innerHTML || elm.textContent;
+                        MessageBox.error(error);
+                    }
+                });
+
+                this.setModel(model);
+
+
+
+
+				/*this.setModel(new JSONModel("/client/c4codata", {
 					useBatch: false
-				}));
-				this._oErrorHandler = new ErrorHandler(this);*/
+				}));*/
+				//this._oErrorHandler = new ErrorHandler(this);
 			}
 
 			this.oListSelector = new ListSelector();
