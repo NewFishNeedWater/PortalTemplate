@@ -130,7 +130,7 @@ sap.ui.define([
                 //     }
                 // });
 
-                this.utilityHandler.oModelRead(oModel, URLS.ServiceCategory, {
+                this.utilityHandler.oModelRead(oModel, './getServiceCategory', {
                     filters: this.getOwnerComponent().createIncidentCategoryFilters(parentObject, typeCode),
                     success: _self.initIncidentModel.bind(_self),
                     error: function(jqXHR) {
@@ -347,7 +347,7 @@ sap.ui.define([
                 //     error: this.onIncidentFailed.bind(this)
                 // });
 
-                this.utilityHandler.oModelRead(serviceRequestModel,URLS.ServiceCategory, {
+                this.utilityHandler.oModelRead(serviceRequestModel,'./getServiceCategory', {
                     filters: this.getOwnerComponent().createIncidentCategoryFilters(selectedData.ParentObjectID, selectedData.TypeCode),
                     success: this.onIncidentLoaded.bind(this),
                     error: this.onIncidentFailed.bind(this)

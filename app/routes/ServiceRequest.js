@@ -16,7 +16,7 @@ router.get('/getServicePriorityCode',serviceRequestHandler.getServicePriorityCod
 router.get('/getServiceCategory',serviceRequestHandler.getServiceCategory);
 router.get('/getServiceRequestLifeCycleStatusCode',serviceRequestHandler.getServiceRequestLifeCycleStatusCode);
 router.get('/getServiceRequestDescription', serviceRequestHandler.getServiceRequestDescription);
-router.get('/getServiceRequests', serviceRequestHandler.getServiceRequests)
+router.get('/getServiceRequests', serviceRequestHandler.getServiceRequests);
 
 
 
