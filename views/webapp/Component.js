@@ -49,7 +49,7 @@ sap.ui.define([
 
 
 			if (window.location.href.indexOf("mockData") !== -1 || sap.ushell.Container.getUser().getEmail() === "") {
-				this.mockData = true;
+				//this.mockData = true;
 				var model = new JSONModel(jQuery.sap.getModulePath("ServiceRequests") + "/mock/c4codata.json");
 				model.attachRequestCompleted(function() {
 					this.getData().ServiceRequestCollection.forEach(function(request) {
@@ -72,12 +72,11 @@ sap.ui.define([
                 this.setModel(model);*/
                 this.mockData = true;
                 var model = new JSONModel();
-                //TODO migrate into node js??
-                var url ="/client/getServiceRequests";
+                var url ="./getServiceRequests?$skip=0&$top=20";
                 $.ajax({
                     method: "GET",
                     url: url,
-                    async:false,
+                    async:true,
                     success: function(result) {
                         if(result){
                             result.forEach(function(oServiceRequest) {

@@ -57,6 +57,16 @@ sap.ui.define([
 				this.setModel(mockModel, "MockModel");
 			} else {
 				// this.getOwnerComponent().getModel().metadataLoaded().then(this._onMetadataLoaded.bind(this));
+                var oServiceRequetsModel = this.getOwnerComponent().getModel();
+                oServiceRequetsModel.attachRequestCompleted(function() {
+                    var oServiceRequetsData = this.getData();
+                    this._onMetadataLoaded();
+                    oView.setModel(new JSONModel(oServiceRequetsData.ServiceRequest), "ServiceRequest");
+                    oView.setModel(new JSONModel(oServiceRequetsData.LifeCycleModel), "LifeCycleModel");
+                    _self.selectInfoService();
+                    _self.setSelectsToBusy(false);
+                    _self.getIncidentCategoryList();
+                });
 			}
 			var URLS = this.getOwnerComponent().SELECT_BOX_URLS;
 			this.app = this.getOwnerComponent().getAggregation("rootControl");
@@ -68,8 +78,7 @@ sap.ui.define([
 					this.setSelectsToBusy(true);
 				}
 			} else {
-				var url = jQuery.sap.getModulePath("ServiceRequests") + "/destinations/c4c/sap/byd/odata/v1/c4codata/";
-				var incidentModel = new JSONModel({results: []});
+				// var url = jQuery.sap.getModulePath("ServiceRequests") + "/destinations/c4c/sap/byd/odata/v1/c4codata/";
 				// var oModel = new ODataModel(url, {json: true, useBatch: false});
 				// oModel.read(URLS.ServicePriorityCode, {
 				// 	success: _self.infoPriorityReceived.bind(_self),
@@ -80,7 +89,8 @@ sap.ui.define([
                     success: _self.infoPriorityReceived.bind(_self),
                     error: _self.onErrorODataRead
                 });
-				this.setModel(oModel, "ServiceRequest");
+				// TODO? CHECK THIS LOGIC: this.setModel(oModel, "ServiceRequest");
+                var incidentModel = new JSONModel({results: []});
 				this.setModel(incidentModel, "IncidentModel");
 			}
 		},
@@ -380,7 +390,7 @@ sap.ui.define([
 				this.initIncidentModel(incidentModel[parentObject]);
 			} else {
 
-                this.utilityHandler.oModelRead(oModel, URLS.ServiceCategory, {
+                this.utilityHandler.oModelRead(oModel, './getServiceCategory', {
                     filters: _self.getOwnerComponent().createIncidentCategoryFilters(parentObject, typeCode),
                     success: _self.initIncidentModel.bind(_self),
                     error: _self.onErrorIncidentModel.bind(_self)
