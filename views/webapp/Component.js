@@ -70,13 +70,13 @@ sap.ui.define([
                 });
 
                 this.setModel(model);*/
-                this.mockData = true;
+                //this.mockData = true;
                 var model = new JSONModel();
-                var url ="./getServiceRequests?$skip=0&$top=20";
+                var url ="./getServiceRequests?&$orderby=CreationDateTime%20desc&$filter=(ReporterEmail%20eq%20%27"+sap.ushell.Container.getUser().getEmail()+"%27%20or%20ReporterEmail%20eq%20%27"+sap.ushell.Container.getUser().getEmail()+"%27)%20and%20(ServiceRequestUserLifeCycleStatusCodeText%20ne%20%27Completed%27%20or%20ServiceRequestUserLifeCycleStatusCodeText%20ne%20%27Completed%27)&$expand=ServiceRequestDescription%2cServiceRequestAttachmentFolder";
                 $.ajax({
                     method: "GET",
                     url: url,
-                    async:true,
+                    async:false,
                     success: function(result) {
                         if(result){
                             result.forEach(function(oServiceRequest) {
