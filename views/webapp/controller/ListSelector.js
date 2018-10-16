@@ -23,32 +23,22 @@ sap.ui.define([
 					// Used to wait until the setBound masterList function is invoked
                     this._oWhenListHasBeenSet
                         .then(function (oList) {
-                            oList.getBinding("items").attachEventOnce("dataReceived",
-                                function (oData) {
-                                    if (!oData.getParameter("data")) {
-                                        fnReject({
-                                            list: oList,
-                                            error: true
-                                        });
-                                    }
-                                    var oFirstListItem = oList.getItems()[0];
-                                    if (oFirstListItem) {
-                                        // Have to make sure that first list Item is selected
-                                        // and a select event is triggered. Like that, the corresponding
-                                        // detail page is loaded automatically
-                                        fnResolve({
-                                            list: oList,
-                                            firstListitem: oFirstListItem
-                                        });
-                                    } else {
-                                        // No items in the list
-                                        fnReject({
-                                            list: oList,
-                                            error: false
-                                        });
-                                    }
-                                }
-                            );
+                            var oFirstListItem = oList.getItems()[0];
+                            if (oFirstListItem) {
+                                // Have to make sure that first list Item is selected
+                                // and a select event is triggered. Like that, the corresponding
+                                // detail page is loaded automatically
+                                fnResolve({
+                                    list: oList,
+                                    firstListitem: oFirstListItem
+                                });
+                            } else {
+                                // No items in the list
+                                fnReject({
+                                    list: oList,
+                                    error: false
+                                });
+                            }
                         });
                 }.bind(this));
             },

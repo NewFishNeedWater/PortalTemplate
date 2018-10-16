@@ -17,6 +17,7 @@ router.get('/getServiceCategory',serviceRequestHandler.getServiceCategory);
 router.get('/getServiceRequestLifeCycleStatusCode',serviceRequestHandler.getServiceRequestLifeCycleStatusCode);
 router.get('/getServiceRequestDescription', serviceRequestHandler.getServiceRequestDescription);
 router.get('/getServiceRequests', serviceRequestHandler.getServiceRequests);
+router.get('/getProductCollection', serviceRequestHandler.getProductCollection);
 
 
 

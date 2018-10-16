@@ -132,9 +132,11 @@ sap.ui.define([
 
                 this.utilityHandler.oModelRead(oModel, './getServiceCategory', {
                     filters: this.getOwnerComponent().createIncidentCategoryFilters(parentObject, typeCode),
-                    success: _self.initIncidentModel.bind(_self),
+                    success: function(oData){
+                        _self.initIncidentModel(oData);
+					},
                     error: function(jqXHR) {
-                        var error = jqXHR.responseJSON.error.message.value;
+                        // var error = jqXHR.responseJSON.error.message.value;
                         MessageBox.error(error);
                         sap.ui.getCore().byId("createIncidentCategory").setBusy(false);
                     }
@@ -291,6 +293,7 @@ sap.ui.define([
 						_self.oDialog.open();
 					});
 				} else {
+					this._initMetaData(this.getOwnerComponent().getModel());
 					this.oDialog.setModel(this.getOwnerComponent().getModel(), "ServiceRequest");
 				}
 				this.oDialog.setModel(dialogModel);
@@ -308,6 +311,47 @@ sap.ui.define([
 			}
 
 		},
+
+        _initMetaData:function(oServiceRequestModel){
+            // var incidentModelPromise = this.getOwnerComponent().getIncidentModelPromise();
+            // incidentModelPromise.then(function(oData){
+            //     oServiceRequestModel.IncidentModel = oData;
+            // });
+            // var serviceRequestServicePriorityPromise = this.getOwnerComponent().getServiceRequestServicePriorityCodePromise();
+            // serviceRequestServicePriorityPromise.then(function(oData){
+            //     oServiceRequestModel.ServiceRequestServicePriorityCodeCollection = oData;
+            // });
+            // var serviceIssueCategoryPromise = this.getOwnerComponent().getServiceIssueCategoryPromise();
+            // serviceIssueCategoryPromise.then(function(oData){
+            //     oServiceRequestModel.ServiceIssueCategoryCatalogueCategoryCollection = oData;
+            // });
+            // var productionPromise = this.getOwnerComponent().getProductCollectionPromise();
+            // productionPromise.then(function(oData){
+            //     oServiceRequestModel.ProductCollection = oData;
+            // });
+			var oModel = new JSONModel({});
+
+            this.utilityHandler.oModelRead(oModel, './getServicePriorityCode', {
+                success: function(oData){
+                    oServiceRequestModel.ServiceRequestServicePriorityCodeCollection = oData;
+                }
+            });
+            var incidentModel = new JSONModel({results: []});
+            this.setModel(incidentModel, "IncidentModel");
+            this.utilityHandler.oModelRead(oModel, './getServiceCategory', {
+                success: function(oData){
+                    oServiceRequestModel.ServiceIssueCategoryCatalogueCategoryCollection = oData;
+
+                }
+            });
+            this.utilityHandler.oModelRead(oModel, './getProductCollection?$skip=0&$top=100', {
+                success: function(oData){
+                    oServiceRequestModel.ProductCollection = oData;
+                }
+            });
+
+        },
+
 		onDialogOpen: function(context) {
 			var serviceCategorySelect = sap.ui.getCore().byId("createServiceCategory"),
 				incidentCategorySelect = sap.ui.getCore().byId("createIncidentCategory");
@@ -349,7 +393,9 @@ sap.ui.define([
 
                 this.utilityHandler.oModelRead(serviceRequestModel,'./getServiceCategory', {
                     filters: this.getOwnerComponent().createIncidentCategoryFilters(selectedData.ParentObjectID, selectedData.TypeCode),
-                    success: this.onIncidentLoaded.bind(this),
+                    success: function(oData){
+                        _self.initIncidentModel(oData);
+                    },
                     error: this.onIncidentFailed.bind(this)
                 });
 			}
@@ -724,10 +770,10 @@ sap.ui.define([
 		setListFilters: function() {
 			var startupParams = this.component.startupParams;
 
-			if (!this.mockData) {
-				var userEmail = sap.ushell.Container.getUser().getEmail();
-				this._oListFilterState.aFilter.push(new Filter("ReporterEmail", FilterOperator.EQ, userEmail));
-			}
+			// if (!this.mockData) {
+			// 	var userEmail = sap.ushell.Container.getUser().getEmail();
+			// 	//this._oListFilterState.aFilter.push(new Filter("ReporterEmail", FilterOperator.EQ, userEmail));
+			// }
 
 			if (startupParams.pendingResponse) {
 				this._oListFilterState.aFilter.push(new Filter("ServiceRequestUserLifeCycleStatusCode", FilterOperator.EQ, "4"));

@@ -58,15 +58,8 @@ sap.ui.define([
 			} else {
 				// this.getOwnerComponent().getModel().metadataLoaded().then(this._onMetadataLoaded.bind(this));
                 var oServiceRequetsModel = this.getOwnerComponent().getModel();
-                oServiceRequetsModel.attachRequestCompleted(function() {
-                    var oServiceRequetsData = this.getData();
-                    this._onMetadataLoaded();
-                    oView.setModel(new JSONModel(oServiceRequetsData.ServiceRequest), "ServiceRequest");
-                    oView.setModel(new JSONModel(oServiceRequetsData.LifeCycleModel), "LifeCycleModel");
-                    _self.selectInfoService();
-                    _self.setSelectsToBusy(false);
-                    _self.getIncidentCategoryList();
-                });
+                this._onMetadataLoaded();
+                this._initMetaData();
 			}
 			var URLS = this.getOwnerComponent().SELECT_BOX_URLS;
 			this.app = this.getOwnerComponent().getAggregation("rootControl");
@@ -84,15 +77,65 @@ sap.ui.define([
 				// 	success: _self.infoPriorityReceived.bind(_self),
 				// 	error: _self.onErrorODataRead
 				// });
-				var oModel = new JSONModel();
-                this.utilityHandler.oModelRead(oModel, './getServicePriorityCode', {
-                    success: _self.infoPriorityReceived.bind(_self),
-                    error: _self.onErrorODataRead
-                });
-				// TODO? CHECK THIS LOGIC: this.setModel(oModel, "ServiceRequest");
-                var incidentModel = new JSONModel({results: []});
-				this.setModel(incidentModel, "IncidentModel");
+
 			}
+		},
+
+		_initMetaData:function(){
+            var oView = this.getView();
+			var _self = this;
+			var oServiceRequestData = {};
+            var oModel = new JSONModel();
+            // var incidentModelPromise = this.getOwnerComponent().getIncidentModelPromise();
+            // incidentModelPromise.then(function(oData){
+            //    oServiceRequestData.IncidentModel = oData;
+            //     oView.setModel(new JSONModel(oServiceRequestData), "ServiceRequest");
+            // });
+            // var serviceRequestServicePriorityPromise = this.getOwnerComponent().getServiceRequestServicePriorityCodePromise();
+            // serviceRequestServicePriorityPromise.then(function(oData){
+            //     oServiceRequestData.ServiceRequestServicePriorityCodeCollection = oData;
+            //     oView.setModel(new JSONModel(oServiceRequestData), "ServiceRequest");
+            // });
+            // var serviceIssueCategoryPromise = this.getOwnerComponent().getServiceIssueCategoryPromise();
+            // serviceIssueCategoryPromise.then(function(oData){
+            //     oServiceRequestData.ServiceIssueCategoryCatalogueCategoryCollection = oData;
+            //     oView.setModel(new JSONModel(oServiceRequestData), "ServiceRequest");
+            // });
+            // var productionPromise = this.getOwnerComponent().getProductCollectionPromise();
+            // productionPromise.then(function(oData){
+            //     oServiceRequestData.ProductCollection = oData;
+            //     oView.setModel(new JSONModel(oServiceRequestData), "ServiceRequest");
+            // });
+            // oView.setModel(new JSONModel(oServiceRequestData), "ServiceRequest");
+            // var promises = [incidentModelPromise, serviceRequestServicePriorityPromise, serviceIssueCategoryPromise, productionPromise];
+            // Promise.all(promises).then(function(results) {
+            //     oView.setModel(new JSONModel(oServiceRequestData), "ServiceRequest");
+            // });
+
+            this.utilityHandler.oModelRead(oModel, './getServicePriorityCode', {
+                success: function(oData){
+                    oServiceRequestData.ServiceRequestServicePriorityCodeCollection = oData;
+                    oView.setModel(new JSONModel(oServiceRequestData), "ServiceRequest");
+                },
+                error: _self.onErrorODataRead
+            });
+            var incidentModel = new JSONModel({results: []});
+            this.setModel(incidentModel, "IncidentModel");
+            this.utilityHandler.oModelRead(oModel, './getServiceCategory', {
+                success: function(oData){
+                    oServiceRequestData.ServiceIssueCategoryCatalogueCategoryCollection = oData;
+                    oView.setModel(new JSONModel(oServiceRequestData), "ServiceRequest");
+
+                },
+                error: _self.onErrorODataRead
+            });
+            this.utilityHandler.oModelRead(oModel, './getProductCollection?$skip=0&$top=100', {
+                success: function(oData){
+                    oServiceRequestData.ProductCollection = oData;
+                    oView.setModel(new JSONModel(oServiceRequestData), "ServiceRequest");
+                },
+                error: _self.onErrorODataRead
+            });
 		},
 		selectInfoService: function() {
 			var oView = this.getView(),
@@ -166,8 +209,8 @@ sap.ui.define([
 						this.getModel().refresh();
 					}.bind(this),
 					error: function(jqXHR) {
-						var error = jqXHR.responseJSON.error.message.value;
-						MessageBox.error(error);
+						//var error = jqXHR.responseJSON.error.message.value;
+						MessageBox.error('error');
 					},
 					complete: function() {
 						this.app.setBusy(false);
@@ -253,7 +296,7 @@ sap.ui.define([
 						this.getModel().refresh();
 					}.bind(this),
 					error: function(jqXHR) {
-						var elm = jqXHR.responseXML.getElementsByTagName("message")[0];
+						var elm = jqXHR.responseText.getElementsByTagName("message")[0];
 						var error = elm.innerHTML || elm.textContent;
 						MessageBox.error(error);
 					},
@@ -378,12 +421,18 @@ sap.ui.define([
 		},
 		getIncidentCategoryList: function() {
 			var oView = this.getView(),
-				parentObject = oView.byId("infoServiceCategorySelect").getSelectedItem().data("parentObject"),
-                typeCode = oView.byId("infoServiceCategorySelect").getSelectedItem().data("typeCode"),
+                oSelectetedItem = oView.byId("infoServiceCategorySelect").getSelectedItem(),
+                parentObject, typeCode,
+				//parentObject = oView.byId("infoServiceCategorySelect").getSelectedItem().data("parentObject"),
+                // typeCode = oView.byId("infoServiceCategorySelect").getSelectedItem().data("typeCode"),
 				oModel = oView.getModel("ServiceRequest"),
 				_self = this,
 				URLS = this.getOwnerComponent().SELECT_BOX_URLS;
 			oView.byId("infoIncidentCategorySelect").setBusy(true);
+			if(oSelectetedItem){
+                parentObject = oSelectetedItem.data("parentObject");
+                typeCode = oSelectetedItem.data("typeCode");
+			}
 			if (this.getOwnerComponent().mockData) {
 				var mockModelData = oView.getModel("MockModel").getData();
 				var incidentModel = mockModelData.ServiceRequest.IncidentModel;
@@ -392,8 +441,12 @@ sap.ui.define([
 
                 this.utilityHandler.oModelRead(oModel, './getServiceCategory', {
                     filters: _self.getOwnerComponent().createIncidentCategoryFilters(parentObject, typeCode),
-                    success: _self.initIncidentModel.bind(_self),
-                    error: _self.onErrorIncidentModel.bind(_self)
+                    success: function(oData) {
+                        _self.initIncidentModel(oData);
+                        // oModel.setData(oData);
+                        // oModel.refresh();
+                    },
+			        error: _self.onErrorIncidentModel.bind(_self)
                 });
 
 				// oModel.read(URLS.ServiceCategory, {
@@ -434,12 +487,19 @@ sap.ui.define([
 				}
 				this._bindView("/ServiceRequestCollection/" + i);
 			} else {
-				this.getModel().metadataLoaded().then(function() {
-					var sObjectPath = this.getModel().createKey("ServiceRequestCollection", {
-						ObjectID: sObjectId
-					});
-					this._bindView("/" + sObjectPath);
-				}.bind(this));
+                // this.getModel().attachRequestCompleted(function() {
+				// 	var sObjectPath = this.getModel().createKey("ServiceRequestCollection", {
+				// 		ObjectID: sObjectId
+				// 	});
+				// 	this._bindView("/" + sObjectPath);
+				// }.bind(this));
+                var collection = this.getModel().getData().ServiceRequestCollection;
+                for (var i = 0; i < collection.length; i++) {
+                    if (collection[i].ObjectID === sObjectId) {
+                        break;
+                    }
+                }
+                this._bindView("/ServiceRequestCollection/" + i);
 			}
 
 
