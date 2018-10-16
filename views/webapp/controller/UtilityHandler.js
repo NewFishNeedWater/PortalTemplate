@@ -27,6 +27,7 @@ sap.ui.define([
             $.ajax({
                 url:url,
                 type:'GET',
+                async:false,
                 beforeSend: function(request) {
                     //request.setRequestHeader("Authorization", chatbotAPI.nlAPIToken);
                     request.setRequestHeader("Type", "application/json");

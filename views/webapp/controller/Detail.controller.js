@@ -56,17 +56,20 @@ sap.ui.define([
 				});
 				this.setModel(mockModel, "MockModel");
 			} else {
+
+                var oServiceRequestData = this._requestServiceRequestModel();
+
+                this._onMetadataLoaded();
 				// this.getOwnerComponent().getModel().metadataLoaded().then(this._onMetadataLoaded.bind(this));
-                var oServiceRequetsModel = this.getOwnerComponent().getModel();
-                oServiceRequetsModel.attachRequestCompleted(function() {
-                    var oServiceRequetsData = this.getData();
-                    this._onMetadataLoaded();
-                    oView.setModel(new JSONModel(oServiceRequetsData.ServiceRequest), "ServiceRequest");
-                    oView.setModel(new JSONModel(oServiceRequetsData.LifeCycleModel), "LifeCycleModel");
-                    _self.selectInfoService();
-                    _self.setSelectsToBusy(false);
-                    _self.getIncidentCategoryList();
-                });
+                //var oServiceRequetsModel = this.getOwnerComponent().getModel();
+                //var oServiceRequetsData = oServiceRequetsModel.getData();
+                oView.setModel(new JSONModel(oServiceRequestData), "ServiceRequest");
+                //oView.setModel(new JSONModel(oServiceRequetsData.LifeCycleModel), "LifeCycleModel");
+                //oView.setModel(new JSONModel({results: []}), "IncidentModel");
+                _self.selectInfoService();
+                _self.setSelectsToBusy(false);
+                _self.getIncidentCategoryList();
+
 			}
 			var URLS = this.getOwnerComponent().SELECT_BOX_URLS;
 			this.app = this.getOwnerComponent().getAggregation("rootControl");
@@ -94,6 +97,101 @@ sap.ui.define([
 				this.setModel(incidentModel, "IncidentModel");
 			}
 		},
+
+
+        /**@private get service request list data from back end
+         */
+        _requestServiceRequestModel: function(){
+
+            var oServiceRequestData = {ServiceRequest
+                    :{ServiceRequestServicePriorityCodeCollection:[],
+                ProductCollection:[]},
+            ServiceIssueCategoryCatalogueCategoryCollection:[],
+            IncidentModel:[]};
+
+            oServiceRequestData.ServiceRequest.IncidentModel = this._requestIncidentData();
+
+            oServiceRequestData.ServiceRequest.ServiceRequestServicePriorityCodeCollection = this._requestServiceRequestServicePriorityCodeData();
+
+            oServiceRequestData.ServiceRequest.ProductCollection = this._requestProductData();
+
+            oServiceRequestData.ServiceRequest.ServiceIssueCategoryCatalogueCategoryCollection = this._requestServiceIssueCategoryCatalogueCategoryData();
+
+            return oServiceRequestData;
+        },
+
+        /**
+         * @private get incident data from back end
+         * @param parentObjectId ticket UUID
+         * @param typeCode ?
+         *
+         */
+        _requestIncidentData: function(parentObjectId,typeCode){
+
+            var that=this;
+            var oModel = new JSONModel();
+            this.utilityHandler.oModelRead(oModel, "./getIncidentCategory?$filter=ParentObjectID eq "+parentObjectId+" and TypeCode eq "+typeCode, {
+                success: function(oData){
+                    return oData;
+                },
+                error: that.onErrorODataRead
+            });
+
+        },
+
+        /**
+         *
+         * @private get service issue category catalogue category from back end
+         *
+         */
+        _requestServiceIssueCategoryCatalogueCategoryData: function(){
+
+            var that=this;
+            var oModel = new JSONModel();
+            this.utilityHandler.oModelRead(oModel, './getServiceIssueCategoryCatalogueCategory?$skip=0&$top=100', {
+                success: function(oData){
+                  return oData;
+                },
+                error: that.onErrorODataRead
+            });
+
+        },
+
+        /**
+         *
+         * @private get product information from back end
+         */
+        _requestProductData: function(){
+
+            var that=this;
+            var oModel = new JSONModel();
+            this.utilityHandler.oModelRead(oModel, './getProduct?$skip=0&$top=100', {
+                success: function(oData){
+                    return oData;
+                },
+                error: that.onErrorODataRead
+            });
+
+        },
+
+
+        /**
+         *
+         * @private get service request priority code from back end
+         */
+        _requestServiceRequestServicePriorityCodeData : function(){
+
+            var that=this;
+            var oModel = new JSONModel();
+            this.utilityHandler.oModelRead(oModel, './getServicePriorityCode?$skip=0&$top=100', {
+                success: function(oData){
+                    return oData;
+                },
+                error: that.onErrorODataRead
+            });
+
+        },
+
 		selectInfoService: function() {
 			var oView = this.getView(),
 				oElementBinding = oView.getElementBinding(),
@@ -426,20 +524,31 @@ sap.ui.define([
 		_onObjectMatched: function(oEvent) {
 			var sObjectId = oEvent.getParameter("arguments").objectId;
 			if (this.getOwnerComponent().mockData) {
+
 				var collection = this.getModel().getData().ServiceRequestCollection;
 				for (var i = 0; i < collection.length; i++) {
 					if (collection[i].ObjectID === sObjectId) {
 						break;
 					}
 				}
-				this._bindView("/ServiceRequestCollection/" + i);
+				this._bindView("/ServiceRequesattachRequestCompletedtCollection/" + i);
 			} else {
-				this.getModel().metadataLoaded().then(function() {
-					var sObjectPath = this.getModel().createKey("ServiceRequestCollection", {
-						ObjectID: sObjectId
-					});
+				/*this.getModel().attachRequestCompleted(function() {
+
+                    var sObjectPath = this.getModel().createKey("ServiceRequestCollection", {
+                        ObjectID: sObjectId
+                    });
 					this._bindView("/" + sObjectPath);
 				}.bind(this));
+				*/
+                var collection = this.getModel().getData().ServiceRequestCollection;
+                for (var i = 0; i < collection.length; i++) {
+                    if (collection[i].ObjectID === sObjectId) {
+                        break;
+                    }
+                }
+                this._bindView("/ServiceRequestCollection/" + i);
+
 			}
 
 

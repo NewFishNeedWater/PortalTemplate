@@ -5,7 +5,7 @@ const DESTINATION_MAP = {
     "URL": "https://my306768.vlab.sapbydesign.com",
     "Authentication": "BasicAuthentication",
     "ProxyType": "Internet",
-    "Description": "c4c retrive data",
+    "Description": "retrieve data from C4C",
     "User": "crmops",
     "Password": "Ondemand1"
   }

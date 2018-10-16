@@ -40,6 +40,45 @@ function getServiceRequests(req, res){
     });
 }
 
+
+function getServiceIssueCategoryCatalogueCategory(req, res){
+    let service = c4cconfig.BYD_ODATA + 'c4codata';
+    let path = "ServiceIssueCategoryCatalogueCategoryCollection";
+    let searchPath = converstionToOdataParas(req);
+    if(searchPath){
+        path = path + searchPath;
+    }
+    c4capi.fetchODataData(service, path).then(function(response) {
+        res.status(200).send(response);
+    });
+}
+
+
+function getIncidentCategory(req, res){
+    let service = c4cconfig.BYD_ODATA + 'c4codata';
+    let path = "ServiceIssueCategoryCatalogueCategoryCollection";
+    let searchPath = converstionToOdataParas(req);
+    if(searchPath){
+        path = path + searchPath;
+    }
+    c4capi.fetchODataData(service, path).then(function(response) {
+        res.status(200).send(response);
+    });
+}
+
+function getProduct(req, res){
+    let service = c4cconfig.BYD_ODATA + 'c4codata';
+    let path = "ProductCollection";
+    let searchPath = converstionToOdataParas(req);
+    if(searchPath){
+        path = path + searchPath;
+    }
+    c4capi.fetchODataData(service, path).then(function(response) {
+        res.status(200).send(response);
+    });
+}
+
+
 function converstionToOdataParas(req){
     var para = url.parse(req.url, true).query;
     var attr, searchStr, firstFlag = true;
@@ -66,6 +105,9 @@ module.exports = {
     getServiceRequestLifeCycleStatusCode,
     getServiceCategory,
     getServiceRequestDescription,
-    getServiceRequests
+    getServiceRequests,
+    getServiceIssueCategoryCatalogueCategory,
+    getIncidentCategory,
+    getProduct
 
 };
