@@ -79,9 +79,9 @@ sap.ui.define([
                 });
 
                 this.setModel(model);*/
-                this.mockData = false;
+                //this.mockData = false;
                 var model = new JSONModel();
-               // var url ="./getServiceRequests?$skip=0&$top=20";
+               // var url ="./getServiceRequests?&$orderby=CreationDateTime%20desc&$filter=(ReporterEmail%20eq%20%27"+sap.ushell.Container.getUser().getEmail()+"%27%20or%20ReporterEmail%20eq%20%27"+sap.ushell.Container.getUser().getEmail()+"%27)%20and%20(ServiceRequestUserLifeCycleStatusCodeText%20ne%20%27Completed%27%20or%20ServiceRequestUserLifeCycleStatusCodeText%20ne%20%27Completed%27)&$expand=ServiceRequestDescription%2cServiceRequestAttachmentFolder";
                 var email = sap.ushell.Container.getUser().getEmail();
                 var url ="./getServiceRequests?$skip=0&$top=20&$orderby=CreationDateTime desc&$filter=(ReporterEmail eq '" +  email + "' or ReporterEmail eq '" + email
 					+ "') and (ServiceRequestUserLifeCycleStatusCodeText ne 'Completed' or ServiceRequestUserLifeCycleStatusCodeText ne 'Completed')&$expand=ServiceRequestDescription,ServiceRequestAttachmentFolder";

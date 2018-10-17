@@ -1,5 +1,5 @@
 
-const DESTINATION_MAP = require(process.cwd() + '/app/store/desination_map.js');
+const DESTINATION_MAP = require(process.cwd() + '/app/store/DesinationMap.js');
 
 const HOST = ()=>{
   const oDest = DESTINATION_MAP.getActiveProperty();
@@ -18,5 +18,6 @@ module.exports =  {
     ODATA: HOST() + "/sap/c4c/odata/v1/",
     CUST_ODATA: HOST() + "/sap/c4c/odata/cust/v1/",
     BYD_ODATA: HOST() + "/sap/byd/odata/v1/",
+    SCP_ODATA:"/sap/rest/user/scim/",
     AUTHORIZATION: AUTHORIZATION()
 }
