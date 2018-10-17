@@ -86,7 +86,7 @@ sap.ui.define([
 		getC4CContact: function() {
 			//TODO migrate into node js??
 			var userEmail = sap.ushell.Container.getUser().getEmail(),
-				url ="/client/getC4CContact?userEmail="+userEmail;
+				url ="./getC4CContact?userEmail="+userEmail;
 			$.ajax({
 				method: "GET",
 				url: url,
@@ -461,6 +461,7 @@ sap.ui.define([
 			if (this.getOwnerComponent().mockData) {
 				this.serviceCategoryLoaded();
 			} else {
+				//TODO
 				serviceCategorySelect.getBinding("items").attachEvent('dataReceived', this.serviceCategoryLoaded.bind(this));
 			}
 

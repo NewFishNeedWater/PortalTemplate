@@ -40,6 +40,7 @@ sap.ui.define([
 			this.utilityHandler = new UtilityHandler();
 			this.getRouter().getRoute("object").attachPatternMatched(this._onObjectMatched, this);
 			this.setModel(oViewModel, "detailView");
+            //this.getOwnerComponent().mockData= true;
 			var isMock = this.getOwnerComponent().mockData;
 			if (isMock) {
 				this._onMetadataLoaded();
