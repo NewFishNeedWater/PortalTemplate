@@ -57,9 +57,6 @@ sap.ui.define([
 				});
 				this.setModel(mockModel, "MockModel");
 			} else {
-				// this.getOwnerComponent().getModel().metadataLoaded().then(this._onMetadataLoaded.bind(this));
-                var oServiceRequetsModel = this.getOwnerComponent().getModel();
-                // _self.selectInfoService();
                 this._onMetadataLoaded();
                 this._initMetaData();
 			}
@@ -73,12 +70,7 @@ sap.ui.define([
 					this.setSelectsToBusy(true);
 				}
 			} else {
-				// var url = jQuery.sap.getModulePath("ServiceRequests") + "/destinations/c4c/sap/byd/odata/v1/c4codata/";
-				// var oModel = new ODataModel(url, {json: true, useBatch: false});
-				// oModel.read(URLS.ServicePriorityCode, {
-				// 	success: _self.infoPriorityReceived.bind(_self),
-				// 	error: _self.onErrorODataRead
-				// });
+
 
 			}
 		},
@@ -88,31 +80,6 @@ sap.ui.define([
 			var _self = this;
 			var oServiceRequestData = {};
             var oModel = new JSONModel();
-            // var incidentModelPromise = this.getOwnerComponent().getIncidentModelPromise();
-            // incidentModelPromise.then(function(oData){
-            //    oServiceRequestData.IncidentModel = oData;
-            //     oView.setModel(new JSONModel(oServiceRequestData), "ServiceRequest");
-            // });
-            // var serviceRequestServicePriorityPromise = this.getOwnerComponent().getServiceRequestServicePriorityCodePromise();
-            // serviceRequestServicePriorityPromise.then(function(oData){
-            //     oServiceRequestData.ServiceRequestServicePriorityCodeCollection = oData;
-            //     oView.setModel(new JSONModel(oServiceRequestData), "ServiceRequest");
-            // });
-            // var serviceIssueCategoryPromise = this.getOwnerComponent().getServiceIssueCategoryPromise();
-            // serviceIssueCategoryPromise.then(function(oData){
-            //     oServiceRequestData.ServiceIssueCategoryCatalogueCategoryCollection = oData;
-            //     oView.setModel(new JSONModel(oServiceRequestData), "ServiceRequest");
-            // });
-            // var productionPromise = this.getOwnerComponent().getProductCollectionPromise();
-            // productionPromise.then(function(oData){
-            //     oServiceRequestData.ProductCollection = oData;
-            //     oView.setModel(new JSONModel(oServiceRequestData), "ServiceRequest");
-            // });
-            // oView.setModel(new JSONModel(oServiceRequestData), "ServiceRequest");
-            // var promises = [incidentModelPromise, serviceRequestServicePriorityPromise, serviceIssueCategoryPromise, productionPromise];
-            // Promise.all(promises).then(function(results) {
-            //     oView.setModel(new JSONModel(oServiceRequestData), "ServiceRequest");
-            // });
 
             this.utilityHandler.oModelRead(oModel, './getServicePriorityCode', {
                 success: function(oData){
@@ -412,7 +379,7 @@ sap.ui.define([
 		initIncidentModel: function(data) {
 			var oView = this.getView(),
 				incidentModel = oView.getModel("IncidentModel");
-			incidentModel.setData(data);
+			incidentModel.setData({results:data});
 			incidentModel.refresh();
 			oView.byId("infoIncidentCategorySelect").setBusy(false);
 		},
@@ -425,8 +392,8 @@ sap.ui.define([
 			var oView = this.getView(),
                 oSelectetedItem = oView.byId("infoServiceCategorySelect").getSelectedItem(),
                 parentObject, typeCode,
-				//parentObject = oView.byId("infoServiceCategorySelect").getSelectedItem().data("parentObject"),
-                // typeCode = oView.byId("infoServiceCategorySelect").getSelectedItem().data("typeCode"),
+				parentObject = oView.byId("infoServiceCategorySelect").getSelectedItem().data("parentObject"),
+                typeCode = oView.byId("infoServiceCategorySelect").getSelectedItem().data("typeCode"),
 				oModel = oView.getModel("ServiceRequest"),
 				_self = this,
 				URLS = this.getOwnerComponent().SELECT_BOX_URLS;
@@ -441,7 +408,7 @@ sap.ui.define([
 				this.initIncidentModel(incidentModel[parentObject]);
 			} else {
 
-                this.utilityHandler.oModelRead(oModel, './getServiceCategory', {
+                this.utilityHandler.oModelRead(oModel, './getIncidentCategory', {
                     filters: _self.getOwnerComponent().createIncidentCategoryFilters(parentObject, typeCode),
                     success: function(oData) {
                         _self.initIncidentModel(oData);

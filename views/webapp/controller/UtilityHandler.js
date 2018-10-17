@@ -100,14 +100,14 @@ sap.ui.define([
              var i = 0, len = filters.length, str = '$filter=';
              for(i = 0; i < len; i++){
                  var filter = filters[i];
-                 if(filter.operator === FilterOperator.EQ){
-                     str = filter.path + ' eq ' + filter.value1;
+                 if(filter.sOperator === FilterOperator.EQ){
+                     str += filter.sPath + ' eq ' + '\''+filter.oValue1+'\'';
                  }
                  if(i < len - 1){
                      str = str + ' and '
                  }
              }
-             baseURL
+             return baseURL + str;
          },
 
     });

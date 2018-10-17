@@ -115,10 +115,10 @@ function converstionToOdataParas(req){
         searchStr = '?';
         for(attr in para){
             if(firstFlag){
-                searchStr = searchStr + attr + '=' + para[attr];
+                searchStr = searchStr + attr + '=' + para[attr]+'';
                 firstFlag = false;
             }else{
-                searchStr = searchStr + '&' + attr + '=' + para[attr];
+                searchStr = searchStr + '&' + attr + '=' + para[attr]+'';
             }
         }
         return searchStr;
@@ -139,7 +139,6 @@ module.exports = {
     getServiceIssueCategoryCatalogueCategory,
     getIncidentCategory,
     getProduct,
-    getServiceRequests,
     getProductCollection,
     postServiceRequests
 };
