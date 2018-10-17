@@ -6,6 +6,10 @@ const c4capi = require(process.cwd() + '/app/utils/c4capi.js'),
 function getServicePriorityCode (req, res){
     let service = c4cconfig.BYD_ODATA + 'c4codata';
     let path = "ServiceRequestServicePriorityCodeCollection";
+    let searchPath = converstionToOdataParas(req);
+    if(searchPath){
+        path = path + searchPath;
+    }
     c4capi.fetchODataData(service, path).then(function(response) {
         res.status(200).send(response);
     });
@@ -20,9 +24,25 @@ function getServiceRequestLifeCycleStatusCode (req, res){
     });
 }
 
+function getProductCollection(req, res){
+    let service = c4cconfig.BYD_ODATA + 'c4codata';
+    let path = "ProductCollection";
+    let searchPath = converstionToOdataParas(req);
+    if(searchPath){
+        path = path + searchPath;
+    }
+    c4capi.fetchODataData(service, path).then(function(response) {
+        res.status(200).send(response);
+    });
+}
+
 function getServiceCategory(req, res){
     let service = c4cconfig.BYD_ODATA + 'c4codata';
     let path = "ServiceIssueCategoryCatalogueCategoryCollection";
+    let searchPath = converstionToOdataParas(req);
+    if(searchPath){
+        path = path + searchPath;
+    }
     c4capi.fetchODataData(service, path).then(function(response) {
         res.status(200).send(response);
     });
@@ -36,7 +56,16 @@ function getServiceRequests(req, res){
         path = path + searchPath;
     }
     c4capi.fetchODataData(service, path).then(function(response) {
-        res.status(200).send(response);
+         res.status(200).send(response);
+    });
+}
+
+function postServiceRequests(req, res){
+    let service = c4cconfig.BYD_ODATA + 'c4codata';
+    let path = "ServiceRequestCollection";
+    var oData =  req.body;
+    c4capi.postODataData(service, path, oData).then(function(response) {
+        res.status(201).send(response);
     });
 }
 
@@ -96,6 +125,7 @@ function converstionToOdataParas(req){
     }
 }
 
+
 function getServiceRequestDescription(req, res){
 
 }
@@ -108,6 +138,8 @@ module.exports = {
     getServiceRequests,
     getServiceIssueCategoryCatalogueCategory,
     getIncidentCategory,
-    getProduct
-
+    getProduct,
+    getServiceRequests,
+    getProductCollection,
+    postServiceRequests
 };

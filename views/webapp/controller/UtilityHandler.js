@@ -10,7 +10,7 @@ sap.ui.define([
          * Utility method: Read data from server and render oModel
          * @param {JSONModel}oModel
          * @param {string}baseURL
-         * @param {object}oSettingsUtilityHandler
+         * @param {object}oSettings
          *         ----{function} success: success call back method
          *         ----{function} error: error call back method
          *         ----{array} filters: filter table
@@ -20,7 +20,7 @@ sap.ui.define([
              if(this._checkURLWithCondition(oSettings)){
                  url = url + "?";
              }
-             if(oSettings.filters){
+            if(oSettings && oSettings.filters){
                  // In case need to add filter conditions
                  url = this._setURLByFilters(url, oSettings.filters);
              }
@@ -34,19 +34,47 @@ sap.ui.define([
                 },
                 dataType:'json',
                 success: function(oData){
-                    oModel.setData(oData);
-                    oModel.refresh();
-                    if(oSettings.success){
+                    if(oSettings && oSettings.success){
                         oSettings.success(oData);
                     }
                 }.bind(this),
                 error: function(jqXHR){
-                    var elm = jqXHR.responseXML.getElementsByTagName("message")[0];
-                    var error = elm.innerHTML || elm.textContent;
-                    //MessageBox.error(error);
-                    oSettings.error(error);
+                    // var elm = jqXHR.responseXML.getElementsByTagName("message")[0];
+                    // var error = elm.innerHTML || elm.textContent;
+                    // //MessageBox.error(error);
+                    // oSettings.error(error);
+                    if(oSettings && oSettings.error){
+                        oSettings.error(jqXHR);
+                    }
                 }
             });
+        },
+
+        getModelReadPromise: function(baseURL, oSettings){
+            var url = baseURL;
+            if(this._checkURLWithCondition(oSettings)){
+                url = url + "?";
+            }
+            if(oSettings && oSettings.filters){
+                // In case need to add filter conditions
+                url = this._setURLByFilters(url, oSettings.filters);
+            }
+             return new Promise(function(resolve, reject){
+                 $.ajax({
+                     url:url,
+                     type:'GET',
+                     beforeSend: function(request) {
+                         request.setRequestHeader("Type", "application/json");
+                     },
+                     dataType:'json',
+                     success: function(oData){
+                         resolve(oData);
+                     }.bind(this),
+                     error: function(jqXHR){
+                         reject(jqXHR);
+                     }
+                 });
+             });
         },
 
         /**
@@ -56,6 +84,9 @@ sap.ui.define([
          * @private
          */
         _checkURLWithCondition: function(oSettings){
+            if(!oSettings){
+                return false;
+            }
             if(oSettings.filters){
                 return true;
             }

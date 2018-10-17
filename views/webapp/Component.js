@@ -5,8 +5,9 @@ sap.ui.define([
 	"sap/ui/model/json/JSONModel",
 	"ServiceRequests/model/models",
 	"ServiceRequests/controller/ListSelector",
-	"ServiceRequests/controller/ErrorHandler"
-], function(UIComponent, Device, ODataModel, JSONModel, models, ListSelector, ErrorHandler) {
+	"ServiceRequests/controller/ErrorHandler",
+    "ServiceRequests/controller/UtilityHandler",
+], function(UIComponent, Device, ODataModel, JSONModel, models, ListSelector, ErrorHandler, UtilityHandler) {
 	"use strict";
 
 	return UIComponent.extend("ServiceRequests.Component", {
@@ -25,6 +26,13 @@ sap.ui.define([
 			IncidentCategory: '/ServiceIssueCategoryCatalogueCategoryCollection?$filter=ParentObjectID%20eq%20%27${0}%27',
 			DescriptionTypeCollection: '/ServiceRequestTextCollectionTypeCodeCollection',
 			ProductCategoryCollection: '/ProductCollection'
+		},
+
+		functionMetaData: {
+            ServiceRequestServicePriorityCodeCollection:null,
+            ServiceIssueCategoryCatalogueCategoryCollection:null,
+            ProductCollection:null,
+            IncidentModel:null
 		},
 
 		/**
@@ -47,6 +55,7 @@ sap.ui.define([
                 }
             };
 
+            this.utilityHandler = new UtilityHandler();
 
 			if (window.location.href.indexOf("mockData") !== -1 || sap.ushell.Container.getUser().getEmail() === "") {
 				//this.mockData = true;
@@ -70,13 +79,16 @@ sap.ui.define([
                 });
 
                 this.setModel(model);*/
-                //this.mockData = true;
+                //this.mockData = false;
                 var model = new JSONModel();
-                var url ="./getServiceRequests?&$orderby=CreationDateTime%20desc&$filter=(ReporterEmail%20eq%20%27"+sap.ushell.Container.getUser().getEmail()+"%27%20or%20ReporterEmail%20eq%20%27"+sap.ushell.Container.getUser().getEmail()+"%27)%20and%20(ServiceRequestUserLifeCycleStatusCodeText%20ne%20%27Completed%27%20or%20ServiceRequestUserLifeCycleStatusCodeText%20ne%20%27Completed%27)&$expand=ServiceRequestDescription%2cServiceRequestAttachmentFolder";
+               // var url ="./getServiceRequests?&$orderby=CreationDateTime%20desc&$filter=(ReporterEmail%20eq%20%27"+sap.ushell.Container.getUser().getEmail()+"%27%20or%20ReporterEmail%20eq%20%27"+sap.ushell.Container.getUser().getEmail()+"%27)%20and%20(ServiceRequestUserLifeCycleStatusCodeText%20ne%20%27Completed%27%20or%20ServiceRequestUserLifeCycleStatusCodeText%20ne%20%27Completed%27)&$expand=ServiceRequestDescription%2cServiceRequestAttachmentFolder";
+                var email = sap.ushell.Container.getUser().getEmail();
+                var url ="./getServiceRequests?$skip=0&$top=20&$orderby=CreationDateTime desc&$filter=(ReporterEmail eq '" +  email + "' or ReporterEmail eq '" + email
+					+ "') and (ServiceRequestUserLifeCycleStatusCodeText ne 'Completed' or ServiceRequestUserLifeCycleStatusCodeText ne 'Completed')&$expand=ServiceRequestDescription,ServiceRequestAttachmentFolder";
                 $.ajax({
                     method: "GET",
                     url: url,
-                    async:false,
+                    async:true,
                     success: function(result) {
                         if(result){
                             result.forEach(function(oServiceRequest) {
@@ -100,9 +112,6 @@ sap.ui.define([
 
                 this.setModel(model);
 
-
-
-
 				/*this.setModel(new JSONModel("/client/c4codata", {
 					useBatch: false
 				}));*/
@@ -122,6 +131,51 @@ sap.ui.define([
 			this.getRouter().initialize();
 		},
 
+		getServiceRequestServicePriorityCodePromise: function(){
+            return new Promise(function(resolve, reject) {
+            	if(this.functionMetaData.ServiceRequestServicePriorityCodeCollection){
+            		resolve(this.functionMetaData.ServiceRequestServicePriorityCodeCollection)
+				}
+				this.utilityHandler.getModelReadPromise('./getServicePriorityCode').then(function(oData){
+                    this.functionMetaData.ServiceRequestServicePriorityCodeCollection = oData;
+                    resolve(this.functionMetaData.ServiceRequestServicePriorityCodeCollection)
+                }.bind(this));
+            }.bind(this));
+		},
+
+        getServiceIssueCategoryPromise: function(){
+            return new Promise(function(resolve, reject) {
+                if(this.functionMetaData.ServiceIssueCategoryCatalogueCategoryCollection){
+                    resolve(this.functionMetaData.ServiceIssueCategoryCatalogueCategoryCollection)
+                }
+                this.utilityHandler.getModelReadPromise('./getServiceCategory').then(function(oData){
+                    this.functionMetaData.ServiceIssueCategoryCatalogueCategoryCollection = oData;
+                    resolve(this.functionMetaData.ServiceIssueCategoryCatalogueCategoryCollection)
+				}.bind(this));
+            }.bind(this));
+        },
+
+        getProductCollectionPromise: function(){
+            return new Promise(function(resolve, reject) {
+                if(this.functionMetaData.ProductCollection){
+                    resolve(this.functionMetaData.ProductCollection)
+                }
+                this.utilityHandler.getModelReadPromise('./getProductCollection?$skip=0&$top=100').then(function(oData){
+                    this.functionMetaData.ProductCollection = oData;
+                    resolve(this.functionMetaData.ProductCollection)
+                }.bind(this));
+            }.bind(this));
+        },
+
+        getIncidentModelPromise: function(){
+            return new Promise(function(resolve, reject) {
+                if(this.functionMetaData.incidentModel){
+                    resolve(this.functionMetaData.incidentModel)
+                }
+                resolve({results: []});
+            }.bind(this));
+        },
+
         createIncidentCategoryFilters: function(parentObject, typeCode) {
             return [
                 new sap.ui.model.Filter({
@@ -136,6 +190,8 @@ sap.ui.define([
                 })
             ];
         },
+
+
 
 		receiveStartupParams: function() {
 			var obj = {},
