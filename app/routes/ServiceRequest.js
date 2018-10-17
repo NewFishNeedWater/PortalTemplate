@@ -18,6 +18,7 @@ router.get('/getServiceRequestLifeCycleStatusCode',serviceRequestHandler.getServ
 router.get('/getServiceRequestDescription', serviceRequestHandler.getServiceRequestDescription);
 router.get('/getServiceRequests', serviceRequestHandler.getServiceRequests);
 router.get('/getProductCollection', serviceRequestHandler.getProductCollection);
+router.post('/postServiceRequests', serviceRequestHandler.postServiceRequests);
 
 
 

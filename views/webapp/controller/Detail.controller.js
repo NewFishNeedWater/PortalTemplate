@@ -58,6 +58,7 @@ sap.ui.define([
 			} else {
 				// this.getOwnerComponent().getModel().metadataLoaded().then(this._onMetadataLoaded.bind(this));
                 var oServiceRequetsModel = this.getOwnerComponent().getModel();
+                // _self.selectInfoService();
                 this._onMetadataLoaded();
                 this._initMetaData();
 			}

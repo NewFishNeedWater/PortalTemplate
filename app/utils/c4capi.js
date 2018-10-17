@@ -141,5 +141,6 @@ function postData(url, data, oSettings){
 module.exports = {
     fetchODataData,
     fetchToken,
-    postData
+    postData,
+    postODataData
 }

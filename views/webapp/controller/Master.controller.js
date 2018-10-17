@@ -293,9 +293,14 @@ sap.ui.define([
 						_self.oDialog.open();
 					});
 				} else {
-					this._initMetaData(this.getOwnerComponent().getModel());
-					this.oDialog.setModel(this.getOwnerComponent().getModel(), "ServiceRequest");
+					var oCreateModel = {};
+                    this._initMetaData(oCreateModel);
+                    var oCreateJsonModel = new JSONModel(oCreateModel);
+                    this.oDialog.setModel(oCreateJsonModel, "ServiceRequest");
+
+					// this.oDialog.setModel(this.getOwnerComponent().getModel(), "ServiceRequest");
 				}
+
 				this.oDialog.setModel(dialogModel);
 				this.oDialog.attachAfterClose(function() {
 					this.oDialog.destroy();
@@ -329,26 +334,114 @@ sap.ui.define([
             // productionPromise.then(function(oData){
             //     oServiceRequestModel.ProductCollection = oData;
             // });
-			var oModel = new JSONModel({});
 
-            this.utilityHandler.oModelRead(oModel, './getServicePriorityCode', {
-                success: function(oData){
-                    oServiceRequestModel.ServiceRequestServicePriorityCodeCollection = oData;
+			var _dummyPriority = [{
+                "Code": "1",
+                "Description": "Immediate"
+                },
+                {
+                    "Code": "2",
+                    "Description": "Urgent"
+                },
+                {
+                    "Code": "3",
+                    "Description": "Normal"
+                },
+                {
+                    "Code": "7",
+                    "Description": "Low"
                 }
-            });
-            var incidentModel = new JSONModel({results: []});
-            this.setModel(incidentModel, "IncidentModel");
-            this.utilityHandler.oModelRead(oModel, './getServiceCategory', {
-                success: function(oData){
-                    oServiceRequestModel.ServiceIssueCategoryCatalogueCategoryCollection = oData;
+            ];
+            oServiceRequestModel.ServiceRequestServicePriorityCodeCollection = _dummyPriority;
 
+            var serviceIssueCategoryCatalogueCategoryCollection = [
+                {
+                    "ObjectID": "00163E03A0701ED28A8477F205D00A37",
+                    "ParentObjectID": "00163E03A0701ED28A846E6DDBA46A34",
+                    "ServiceIssueCategoryID": "CA_1",
+                    "TypeCode": "1",
+                    "UUID": "00163E03-A070-1ED2-8A84-77F205D00A37",
+                    "Name": {
+                        "__metadata": {
+                            "type": "c4codata.MEDIUM_Name"
+                        },
+                        "content": "Complaint/Compliment/Feedback"
+                    },
+                    "ETag": "/Date(1372055196000)/",
+                    "TypeCodeText": "Process"
+                },
+                {
+                    "ObjectID": "00163E03A0701ED28A847DB8726C4A39",
+                    "ParentObjectID": "00163E03A0701ED28A846E6DDBA46A66",
+                    "ServiceIssueCategoryID": "CA_11",
+                    "TypeCode": "2",
+                    "UUID": "00163E03-A070-1ED2-8A84-7DB8726C4A39",
+                    "Name": {
+                        "content": "Complaint"
+                    },
+                    "ETag": "/Date(1372055196000)/",
+                    "TypeCodeText": "Incident"
+                },
+                {
+                    "ObjectID": "00163E03A0701ED28A847F0962E4CA3A",
+                    "ParentObjectID": "00163E03A0701ED28A846E6DDBA46A93",
+                    "ServiceIssueCategoryID": "CA_12",
+                    "TypeCode": "2",
+                    "UUID": "00163E03-A070-1ED2-8A84-7F0962E4CA3A",
+                    "Name": {
+                        "content": "Compliment"
+                    },
+                    "ETag": "/Date(1372055196000)/",
+                    "TypeCodeText": "Incident"
+                },
+                {
+                    "ObjectID": "00163E03A0701ED28A84800886978A3A",
+                    "ParentObjectID": "00163E03A0701ED28A846E6DDBA46A57",
+                    "ServiceIssueCategoryID": "CA_13",
+                    "TypeCode": "2",
+                    "UUID": "00163E03-A070-1ED2-8A84-800886978A3A",
+                    "Name": {
+                        "content": "Feedback"
+                    },
+                    "ETag": "/Date(1372055196000)/",
+                    "TypeCodeText": "Incident"
+                },
+                {
+                    "ObjectID": "00163E03A0701ED28A8482E553764A60",
+                    "ParentObjectID": "00163E03A0701ED28A846E6DDBA46A43",
+                    "ServiceIssueCategoryID": "CA_2",
+                    "TypeCode": "1",
+                    "UUID": "00163E03-A070-1ED2-8A84-82E553764A60",
+                    "Name": {
+                        "content": "Help/Assistance"
+                    },
+                    "ETag": "/Date(1372055196000)/",
+                    "TypeCodeText": "Process"
                 }
-            });
-            this.utilityHandler.oModelRead(oModel, './getProductCollection?$skip=0&$top=100', {
-                success: function(oData){
-                    oServiceRequestModel.ProductCollection = oData;
-                }
-            });
+            ];
+            oServiceRequestModel.ServiceIssueCategoryCatalogueCategoryCollection = serviceIssueCategoryCatalogueCategoryCollection;
+
+
+            // var oModel = new JSONModel({});
+            //
+            // this.utilityHandler.oModelRead(oModel, './getServicePriorityCode', {
+            //     success: function(oData){
+            //         oServiceRequestModel.ServiceRequestServicePriorityCodeCollection = oData;
+            //     }
+            // });
+            // var incidentModel = new JSONModel({results: []});
+            // this.setModel(incidentModel, "IncidentModel");
+            // this.utilityHandler.oModelRead(oModel, './getServiceCategory', {
+            //     success: function(oData){
+            //         oServiceRequestModel.ServiceIssueCategoryCatalogueCategoryCollection = oData;
+            //
+            //     }
+            // });
+            // this.utilityHandler.oModelRead(oModel, './getProductCollection?$skip=0&$top=100', {
+            //     success: function(oData){
+            //         oServiceRequestModel.ProductCollection = oData;
+            //     }
+            // });
 
         },
 
@@ -573,14 +666,15 @@ sap.ui.define([
 				//TODO migrate to node js??
 				var model = view.getModel(),
 					url = model.sServiceUrl + "/ServiceRequestCollection",
-					token = model.getSecurityToken();
+					// token = model.getSecurityToken();
+				url = './postServiceRequests'
 				jQuery.ajax({
 					url: url,
 					method: "POST",
 					contentType: "application/json",
-					headers: {
-						"X-CSRF-TOKEN": token
-					},
+					// headers: {
+					// 	"X-CSRF-TOKEN": token
+					// },
 					data: JSON.stringify(data),
 					success: this.setTicketDescription.bind(this),
 					error: function(jqXHR) {

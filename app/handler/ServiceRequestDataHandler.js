@@ -60,6 +60,15 @@ function getServiceRequests(req, res){
     });
 }
 
+function postServiceRequests(req, res){
+    let service = c4cconfig.BYD_ODATA + 'c4codata';
+    let path = "ServiceRequestCollection";
+    var oData =  req.body;
+    c4capi.postODataData(service, path, oData).then(function(response) {
+        res.status(201).send(response);
+    });
+}
+
 function converstionToOdataParas(req){
     var para = url.parse(req.url, true).query;
     var attr, searchStr, firstFlag = true;
@@ -77,6 +86,7 @@ function converstionToOdataParas(req){
     }
 }
 
+
 function getServiceRequestDescription(req, res){
 
 }
@@ -87,6 +97,6 @@ module.exports = {
     getServiceCategory,
     getServiceRequestDescription,
     getServiceRequests,
-    getProductCollection
-
+    getProductCollection,
+    postServiceRequests
 };
