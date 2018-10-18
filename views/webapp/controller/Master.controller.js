@@ -84,9 +84,8 @@ sap.ui.define([
 		},
 
 		getC4CContact: function() {
-			//TODO migrate into node js??
 			var userEmail = sap.ushell.Container.getUser().getEmail(),
-				url ="./getC4CContact?userEmail="+userEmail;
+				url ="/client/getC4CContact?userEmail="+userEmail;
 			$.ajax({
 				method: "GET",
 				url: url,
@@ -294,10 +293,10 @@ sap.ui.define([
 					});
 				} else {
 					var oCreateModel = {};
-                    this._initMetaData(oCreateModel);
+
                     var oCreateJsonModel = new JSONModel(oCreateModel);
                     this.oDialog.setModel(oCreateJsonModel, "ServiceRequest");
-
+                    this._initMetaData(oCreateModel);
 					// this.oDialog.setModel(this.getOwnerComponent().getModel(), "ServiceRequest");
 				}
 
@@ -318,131 +317,26 @@ sap.ui.define([
 		},
 
         _initMetaData:function(oServiceRequestModel){
-            // var incidentModelPromise = this.getOwnerComponent().getIncidentModelPromise();
-            // incidentModelPromise.then(function(oData){
-            //     oServiceRequestModel.IncidentModel = oData;
-            // });
-            // var serviceRequestServicePriorityPromise = this.getOwnerComponent().getServiceRequestServicePriorityCodePromise();
-            // serviceRequestServicePriorityPromise.then(function(oData){
-            //     oServiceRequestModel.ServiceRequestServicePriorityCodeCollection = oData;
-            // });
-            // var serviceIssueCategoryPromise = this.getOwnerComponent().getServiceIssueCategoryPromise();
-            // serviceIssueCategoryPromise.then(function(oData){
-            //     oServiceRequestModel.ServiceIssueCategoryCatalogueCategoryCollection = oData;
-            // });
-            // var productionPromise = this.getOwnerComponent().getProductCollectionPromise();
-            // productionPromise.then(function(oData){
-            //     oServiceRequestModel.ProductCollection = oData;
-            // });
-
-			var _dummyPriority = [{
-                "Code": "1",
-                "Description": "Immediate"
-                },
-                {
-                    "Code": "2",
-                    "Description": "Urgent"
-                },
-                {
-                    "Code": "3",
-                    "Description": "Normal"
-                },
-                {
-                    "Code": "7",
-                    "Description": "Low"
-                }
-            ];
-            oServiceRequestModel.ServiceRequestServicePriorityCodeCollection = _dummyPriority;
-
-            var serviceIssueCategoryCatalogueCategoryCollection = [
-                {
-                    "ObjectID": "00163E03A0701ED28A8477F205D00A37",
-                    "ParentObjectID": "00163E03A0701ED28A846E6DDBA46A34",
-                    "ServiceIssueCategoryID": "CA_1",
-                    "TypeCode": "1",
-                    "UUID": "00163E03-A070-1ED2-8A84-77F205D00A37",
-                    "Name": {
-                        "__metadata": {
-                            "type": "c4codata.MEDIUM_Name"
-                        },
-                        "content": "Complaint/Compliment/Feedback"
-                    },
-                    "ETag": "/Date(1372055196000)/",
-                    "TypeCodeText": "Process"
-                },
-                {
-                    "ObjectID": "00163E03A0701ED28A847DB8726C4A39",
-                    "ParentObjectID": "00163E03A0701ED28A846E6DDBA46A66",
-                    "ServiceIssueCategoryID": "CA_11",
-                    "TypeCode": "2",
-                    "UUID": "00163E03-A070-1ED2-8A84-7DB8726C4A39",
-                    "Name": {
-                        "content": "Complaint"
-                    },
-                    "ETag": "/Date(1372055196000)/",
-                    "TypeCodeText": "Incident"
-                },
-                {
-                    "ObjectID": "00163E03A0701ED28A847F0962E4CA3A",
-                    "ParentObjectID": "00163E03A0701ED28A846E6DDBA46A93",
-                    "ServiceIssueCategoryID": "CA_12",
-                    "TypeCode": "2",
-                    "UUID": "00163E03-A070-1ED2-8A84-7F0962E4CA3A",
-                    "Name": {
-                        "content": "Compliment"
-                    },
-                    "ETag": "/Date(1372055196000)/",
-                    "TypeCodeText": "Incident"
-                },
-                {
-                    "ObjectID": "00163E03A0701ED28A84800886978A3A",
-                    "ParentObjectID": "00163E03A0701ED28A846E6DDBA46A57",
-                    "ServiceIssueCategoryID": "CA_13",
-                    "TypeCode": "2",
-                    "UUID": "00163E03-A070-1ED2-8A84-800886978A3A",
-                    "Name": {
-                        "content": "Feedback"
-                    },
-                    "ETag": "/Date(1372055196000)/",
-                    "TypeCodeText": "Incident"
-                },
-                {
-                    "ObjectID": "00163E03A0701ED28A8482E553764A60",
-                    "ParentObjectID": "00163E03A0701ED28A846E6DDBA46A43",
-                    "ServiceIssueCategoryID": "CA_2",
-                    "TypeCode": "1",
-                    "UUID": "00163E03-A070-1ED2-8A84-82E553764A60",
-                    "Name": {
-                        "content": "Help/Assistance"
-                    },
-                    "ETag": "/Date(1372055196000)/",
-                    "TypeCodeText": "Process"
-                }
-            ];
-            oServiceRequestModel.ServiceIssueCategoryCatalogueCategoryCollection = serviceIssueCategoryCatalogueCategoryCollection;
-
-
-            // var oModel = new JSONModel({});
-            //
-            // this.utilityHandler.oModelRead(oModel, './getServicePriorityCode', {
-            //     success: function(oData){
-            //         oServiceRequestModel.ServiceRequestServicePriorityCodeCollection = oData;
-            //     }
-            // });
-            // var incidentModel = new JSONModel({results: []});
-            // this.setModel(incidentModel, "IncidentModel");
-            // this.utilityHandler.oModelRead(oModel, './getServiceCategory', {
-            //     success: function(oData){
-            //         oServiceRequestModel.ServiceIssueCategoryCatalogueCategoryCollection = oData;
-            //
-            //     }
-            // });
-            // this.utilityHandler.oModelRead(oModel, './getProductCollection?$skip=0&$top=100', {
-            //     success: function(oData){
-            //         oServiceRequestModel.ProductCollection = oData;
-            //     }
-            // });
-
+            var incidentModelPromise = this.getOwnerComponent().getIncidentModelPromise();
+            incidentModelPromise.then(function(oData){
+                oServiceRequestModel.IncidentModel = oData;
+                this.oDialog.setModel(new JSONModel(oServiceRequestModel), "ServiceRequest");
+            }.bind(this));
+            var serviceRequestServicePriorityPromise = this.getOwnerComponent().getServiceRequestServicePriorityCodePromise();
+            serviceRequestServicePriorityPromise.then(function(oData){
+                oServiceRequestModel.ServiceRequestServicePriorityCodeCollection = oData;
+                this.oDialog.setModel(new JSONModel(oServiceRequestModel), "ServiceRequest");
+            }.bind(this));
+            var serviceIssueCategoryPromise = this.getOwnerComponent().getServiceIssueCategoryPromise();
+            serviceIssueCategoryPromise.then(function(oData){
+                oServiceRequestModel.ServiceIssueCategoryCatalogueCategoryCollection = oData;
+                this.oDialog.setModel(new JSONModel(oServiceRequestModel), "ServiceRequest");
+            }.bind(this));
+            var productionPromise = this.getOwnerComponent().getProductCollectionPromise();
+            productionPromise.then(function(oData){
+                oServiceRequestModel.ProductCollection = oData;
+                this.oDialog.setModel(new JSONModel(oServiceRequestModel), "ServiceRequest");
+            }.bind(this));
         },
 
 		onDialogOpen: function(context) {
@@ -456,13 +350,12 @@ sap.ui.define([
 						selectBox.setSelectedKey(context[select]);
 					}
 				}
-
 			}
 			if (this.getOwnerComponent().mockData) {
 				this.serviceCategoryLoaded();
 			} else {
-				//TODO
-				serviceCategorySelect.getBinding("items").attachEvent('dataReceived', this.serviceCategoryLoaded.bind(this));
+				//serviceCategorySelect.getBinding("items").attachEvent('dataReceived', this.serviceCategoryLoaded.bind(this));
+                this.serviceCategoryLoaded();
 			}
 
 		},
@@ -476,22 +369,29 @@ sap.ui.define([
 					incidentModel = mockModelData.IncidentModel;
 				this.onIncidentLoaded(incidentModel[parentObject]);
 			} else {
-				var selectedData = oEvent.getParameter("data").results[0],
-					URLS = this.getOwnerComponent().SELECT_BOX_URLS;
+				// var selectedData = oEvent.getParameter("data").results[0],
+				// 	URLS = this.getOwnerComponent().SELECT_BOX_URLS;
 
                 // serviceRequestModel.read(URLS.ServiceCategory, {
                 //     filters: this.getOwnerComponent().createIncidentCategoryFilters(selectedData.ParentObjectID, selectedData.TypeCode),
                 //     success: this.onIncidentLoaded.bind(this),
                 //     error: this.onIncidentFailed.bind(this)
                 // });
+                //var parentObject = serviceRequestModel.getData().ServiceIssueCategoryCatalogueCategoryCollection[0].ParentObjectID;
+                // var incidentModel = serviceRequestModel.getData().IncidentModel;
 
-                this.utilityHandler.oModelRead(serviceRequestModel,'./getServiceCategory', {
-                    filters: this.getOwnerComponent().createIncidentCategoryFilters(selectedData.ParentObjectID, selectedData.TypeCode),
-                    success: function(oData){
-                        _self.initIncidentModel(oData);
-                    },
-                    error: this.onIncidentFailed.bind(this)
-                });
+                // this.onIncidentLoaded(incidentModel[parentObject]);
+                this.getOwnerComponent().getIncidentModelPromise().then(function(oData){
+                    this.onIncidentLoaded({results:oData.slice(1,3)});
+				}.bind(this));
+
+                // this.utilityHandler.oModelRead(serviceRequestModel,'./getServiceCategory', {
+                //     filters: this.getOwnerComponent().createIncidentCategoryFilters(selectedData.ParentObjectID, selectedData.TypeCode),
+                //     success: function(oData){
+                //         _self.initIncidentModel(oData);
+                //     },
+                //     error: this.onIncidentFailed.bind(this)
+                // });
 			}
 		},
 

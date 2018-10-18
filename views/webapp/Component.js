@@ -56,6 +56,11 @@ sap.ui.define([
             };
 
             this.utilityHandler = new UtilityHandler();
+            // Initial function metadata from back-end.
+            this.getIncidentModelPromise();
+            this.getServiceIssueCategoryPromise();
+            this.getProductCollectionPromise();
+            this.getServiceRequestServicePriorityCodePromise();
 
 			if (window.location.href.indexOf("mockData") !== -1 || sap.ushell.Container.getUser().getEmail() === "") {
 				//this.mockData = true;
@@ -172,7 +177,10 @@ sap.ui.define([
                 if(this.functionMetaData.incidentModel){
                     resolve(this.functionMetaData.incidentModel)
                 }
-                resolve({results: []});
+                this.utilityHandler.getModelReadPromise('./getIncidentCategory').then(function(oData){
+                    this.functionMetaData.incidentModel = oData;
+                    resolve(this.functionMetaData.incidentModel)
+                }.bind(this));
             }.bind(this));
         },
 

@@ -80,31 +80,26 @@ sap.ui.define([
 			var _self = this;
 			var oServiceRequestData = {};
             var oModel = new JSONModel();
-
-            this.utilityHandler.oModelRead(oModel, './getServicePriorityCode', {
-                success: function(oData){
-                    oServiceRequestData.ServiceRequestServicePriorityCodeCollection = oData;
-                    oView.setModel(new JSONModel(oServiceRequestData), "ServiceRequest");
-                },
-                error: _self.onErrorODataRead
-            });
-            var incidentModel = new JSONModel({results: []});
-            this.setModel(incidentModel, "IncidentModel");
-            this.utilityHandler.oModelRead(oModel, './getServiceCategory', {
-                success: function(oData){
-                    oServiceRequestData.ServiceIssueCategoryCatalogueCategoryCollection = oData;
-                    oView.setModel(new JSONModel(oServiceRequestData), "ServiceRequest");
-
-                },
-                error: _self.onErrorODataRead
-            });
-            this.utilityHandler.oModelRead(oModel, './getProductCollection?$skip=0&$top=100', {
-                success: function(oData){
-                    oServiceRequestData.ProductCollection = oData;
-                    oView.setModel(new JSONModel(oServiceRequestData), "ServiceRequest");
-                },
-                error: _self.onErrorODataRead
-            });
+            var incidentModelPromise = this.getOwnerComponent().getIncidentModelPromise();
+            incidentModelPromise.then(function(oData){
+                oServiceRequestData.IncidentModel = oData;
+                oView.setModel(new JSONModel(oServiceRequestData), "ServiceRequest");
+            }.bind(this));
+            var serviceRequestServicePriorityPromise = this.getOwnerComponent().getServiceRequestServicePriorityCodePromise();
+            serviceRequestServicePriorityPromise.then(function(oData){
+                oServiceRequestData.ServiceRequestServicePriorityCodeCollection = oData;
+                oView.setModel(new JSONModel(oServiceRequestData), "ServiceRequest");
+            }.bind(this));
+            var serviceIssueCategoryPromise = this.getOwnerComponent().getServiceIssueCategoryPromise();
+            serviceIssueCategoryPromise.then(function(oData){
+                oServiceRequestData.ServiceIssueCategoryCatalogueCategoryCollection = oData;
+                oView.setModel(new JSONModel(oServiceRequestData), "ServiceRequest");
+            }.bind(this));
+            var productionPromise = this.getOwnerComponent().getProductCollectionPromise();
+            productionPromise.then(function(oData){
+                oServiceRequestData.ProductCollection = oData;
+                oView.setModel(new JSONModel(oServiceRequestData), "ServiceRequest");
+            }.bind(this));
 		},
 		selectInfoService: function() {
 			var oView = this.getView(),
