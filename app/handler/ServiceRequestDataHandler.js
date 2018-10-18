@@ -140,5 +140,6 @@ module.exports = {
     getIncidentCategory,
     getProduct,
     getProductCollection,
-    postServiceRequests
+    postServiceRequests,
+    postServiceRequestDescription
 };

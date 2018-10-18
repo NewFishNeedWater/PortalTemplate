@@ -19,6 +19,7 @@ router.get('/getServiceRequestDescription', serviceRequestHandler.getServiceRequ
 router.get('/getServiceRequests', serviceRequestHandler.getServiceRequests);
 router.get('/getProductCollection', serviceRequestHandler.getProductCollection);
 router.post('/postServiceRequests', serviceRequestHandler.postServiceRequests);
+router.post('/postServiceRequestDescription', serviceRequestHandler.postServiceRequestDescription);
 router.get('/getServiceIssueCategoryCatalogueCategory',serviceRequestHandler.getServiceIssueCategoryCatalogueCategory);
 router.get('/getIncidentCategory',serviceRequestHandler.getIncidentCategory);
 router.get('/getProduct',serviceRequestHandler.getProduct);

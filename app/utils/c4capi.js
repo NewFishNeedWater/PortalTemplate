@@ -45,7 +45,7 @@ function postODataData(service,path,data){
         console.log({"error":error});
         requestEndfunction(error,data,resolve,reject);
       });
-    }).catch(function(){
+    }).catch(function(oEvent){
         reject();
     });
   });
