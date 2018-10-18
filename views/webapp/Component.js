@@ -57,7 +57,7 @@ sap.ui.define([
 
             this.utilityHandler = new UtilityHandler();
             // Initial function metadata from back-end.
-            this.getIncidentModelPromise();
+            //this.getIncidentModelPromise();
             this.getServiceIssueCategoryPromise();
             this.getProductCollectionPromise();
             this.getServiceRequestServicePriorityCodePromise();

@@ -77,29 +77,33 @@ sap.ui.define([
 
 		_initMetaData:function(){
             var oView = this.getView();
-			var _self = this;
+			var that = this;
 			var oServiceRequestData = {};
             var oModel = new JSONModel();
-            var incidentModelPromise = this.getOwnerComponent().getIncidentModelPromise();
-            incidentModelPromise.then(function(oData){
-                oServiceRequestData.IncidentModel = oData;
-                oView.setModel(new JSONModel(oServiceRequestData), "ServiceRequest");
-            }.bind(this));
-            var serviceRequestServicePriorityPromise = this.getOwnerComponent().getServiceRequestServicePriorityCodePromise();
-            serviceRequestServicePriorityPromise.then(function(oData){
-                oServiceRequestData.ServiceRequestServicePriorityCodeCollection = oData;
-                oView.setModel(new JSONModel(oServiceRequestData), "ServiceRequest");
-            }.bind(this));
-            var serviceIssueCategoryPromise = this.getOwnerComponent().getServiceIssueCategoryPromise();
-            serviceIssueCategoryPromise.then(function(oData){
-                oServiceRequestData.ServiceIssueCategoryCatalogueCategoryCollection = oData;
-                oView.setModel(new JSONModel(oServiceRequestData), "ServiceRequest");
-            }.bind(this));
-            var productionPromise = this.getOwnerComponent().getProductCollectionPromise();
-            productionPromise.then(function(oData){
-                oServiceRequestData.ProductCollection = oData;
-                oView.setModel(new JSONModel(oServiceRequestData), "ServiceRequest");
-            }.bind(this));
+            oView.setModel(new JSONModel({results: []}), "IncidentModel");
+            this.utilityHandler.oModelRead(oModel, './getServicePriorityCode', {
+                success: function(oData){
+                    oServiceRequestData.ServiceRequestServicePriorityCodeCollection = oData;
+                    oView.setModel(new JSONModel(oServiceRequestData), "ServiceRequest");
+                },
+                error: that.onErrorODataRead
+            });
+
+            this.utilityHandler.oModelRead(oModel, './getServiceCategory', {
+                success: function(oData){
+                    oServiceRequestData.ServiceIssueCategoryCatalogueCategoryCollection = oData;
+                    oView.setModel(new JSONModel(oServiceRequestData), "ServiceRequest");
+
+                },
+                error: that.onErrorODataRead
+            });
+            this.utilityHandler.oModelRead(oModel, './getProductCollection?$skip=0&$top=100', {
+                success: function(oData){
+                    oServiceRequestData.ProductCollection = oData;
+                    oView.setModel(new JSONModel(oServiceRequestData), "ServiceRequest");
+                },
+                error: that.onErrorODataRead
+            });
 		},
 		selectInfoService: function() {
 			var oView = this.getView(),
@@ -387,8 +391,8 @@ sap.ui.define([
 			var oView = this.getView(),
                 oSelectetedItem = oView.byId("infoServiceCategorySelect").getSelectedItem(),
                 parentObject, typeCode,
-				parentObject = oView.byId("infoServiceCategorySelect").getSelectedItem().data("parentObject"),
-                typeCode = oView.byId("infoServiceCategorySelect").getSelectedItem().data("typeCode"),
+				//parentObject = oView.byId("infoServiceCategorySelect").getSelectedItem().data("parentObject"),
+                //typeCode = oView.byId("infoServiceCategorySelect").getSelectedItem().data("typeCode"),
 				oModel = oView.getModel("ServiceRequest"),
 				_self = this,
 				URLS = this.getOwnerComponent().SELECT_BOX_URLS;
@@ -396,22 +400,23 @@ sap.ui.define([
 			if(oSelectetedItem){
                 parentObject = oSelectetedItem.data("parentObject");
                 typeCode = oSelectetedItem.data("typeCode");
-			}
-			if (this.getOwnerComponent().mockData) {
-				var mockModelData = oView.getModel("MockModel").getData();
-				var incidentModel = mockModelData.ServiceRequest.IncidentModel;
-				this.initIncidentModel(incidentModel[parentObject]);
-			} else {
+                if (this.getOwnerComponent().mockData) {
+                    var mockModelData = oView.getModel("MockModel").getData();
+                    var incidentModel = mockModelData.ServiceRequest.IncidentModel;
+                    this.initIncidentModel(incidentModel[parentObject]);
+                } else {
 
-                this.utilityHandler.oModelRead(oModel, './getIncidentCategory', {
-                    filters: _self.getOwnerComponent().createIncidentCategoryFilters(parentObject, typeCode),
-                    success: function(oData) {
-                        _self.initIncidentModel(oData);
-                        // oModel.setData(oData);
-                        // oModel.refresh();
-                    },
-			        error: _self.onErrorIncidentModel.bind(_self)
-                });
+                    this.utilityHandler.oModelRead(oModel, './getIncidentCategory', {
+                        filters: _self.getOwnerComponent().createIncidentCategoryFilters(parentObject, typeCode),
+                        success: function(oData) {
+                            _self.initIncidentModel(oData);
+                            // oModel.setData(oData);
+                            // oModel.refresh();
+                        },
+                        error: _self.onErrorIncidentModel.bind(_self)
+                    });
+			}
+
 
 				// oModel.read(URLS.ServiceCategory, {
                  //    filters: this.getOwnerComponent().createIncidentCategoryFilters(parentObject, typeCode),
@@ -458,12 +463,15 @@ sap.ui.define([
 				// 	this._bindView("/" + sObjectPath);
 				// }.bind(this));
                 var collection = this.getModel().getData().ServiceRequestCollection;
-                for (var i = 0; i < collection.length; i++) {
-                    if (collection[i].ObjectID === sObjectId) {
-                        break;
+                if(collection){
+                    for (var i = 0; i < collection.length; i++) {
+                        if (collection[i].ObjectID === sObjectId) {
+                            break;
+                        }
                     }
+                    this._bindView("/ServiceRequestCollection/" + i);
                 }
-                this._bindView("/ServiceRequestCollection/" + i);
+
 			}
 
 

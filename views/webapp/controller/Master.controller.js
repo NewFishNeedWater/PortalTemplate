@@ -146,7 +146,7 @@ sap.ui.define([
 
 		initIncidentModel: function(data) {
 			var incidentModel = this.oDialog.getModel("IncidentModel");
-			incidentModel.setData(data);
+			incidentModel.setData({results:data});
 			incidentModel.refresh();
 			sap.ui.getCore().byId("createIncidentCategory").setBusy(false);
 		},
@@ -355,13 +355,15 @@ sap.ui.define([
 			if (this.getOwnerComponent().mockData) {
 				this.serviceCategoryLoaded();
 			} else {
-				//serviceCategorySelect.getBinding("items").attachEvent('dataReceived', this.serviceCategoryLoaded.bind(this));
+				//serviceCategorySelect.getBinding("items").attachEvent('change', this.serviceCategoryLoaded.bind(this));
+                serviceCategorySelect.attachChange(this.serviceCategoryLoaded.bind(this));
                 this.serviceCategoryLoaded();
 			}
 
 		},
 
 		serviceCategoryLoaded: function(oEvent) {
+		    var that = this;
 			var serviceRequestModel = this.oDialog.getModel("ServiceRequest");
 			if (this.getOwnerComponent().mockData) {
 
@@ -370,29 +372,34 @@ sap.ui.define([
 					incidentModel = mockModelData.IncidentModel;
 				this.onIncidentLoaded(incidentModel[parentObject]);
 			} else {
-				// var selectedData = oEvent.getParameter("data").results[0],
-				// 	URLS = this.getOwnerComponent().SELECT_BOX_URLS;
+                var selectedData,ParentObjectID,TypeCode;
+			    if(oEvent){
+                    selectedData = oEvent.oSource.getSelectedItem().data();
+                }else{
+                    selectedData = sap.ui.getCore().byId("createServiceCategory").getSelectedItem().data();
+                }
+                ParentObjectID = selectedData.parentObject;
+                TypeCode = selectedData.typeCode;
 
-                // serviceRequestModel.read(URLS.ServiceCategory, {
-                //     filters: this.getOwnerComponent().createIncidentCategoryFilters(selectedData.ParentObjectID, selectedData.TypeCode),
-                //     success: this.onIncidentLoaded.bind(this),
-                //     error: this.onIncidentFailed.bind(this)
-                // });
-                //var parentObject = serviceRequestModel.getData().ServiceIssueCategoryCatalogueCategoryCollection[0].ParentObjectID;
-                // var incidentModel = serviceRequestModel.getData().IncidentModel;
 
-                // this.onIncidentLoaded(incidentModel[parentObject]);
-                this.getOwnerComponent().getIncidentModelPromise().then(function(oData){
-                    this.onIncidentLoaded({results:oData.slice(1,3)});
-				}.bind(this));
+                 /*serviceRequestModel.read(URLS.ServiceCategory, {
+                     filters: this.getOwnerComponent().createIncidentCategoryFilters(selectedData.ParentObjectID, selectedData.TypeCode),
+                     success: this.onIncidentLoaded.bind(this),
+                     error: this.onIncidentFailed.bind(this)
+                 });
+                var parentObject = serviceRequestModel.getData().ServiceIssueCategoryCatalogueCategoryCollection[0].ParentObjectID;
+                var incidentModel = serviceRequestModel.getData().IncidentModel;
+                */
+                this.utilityHandler.oModelRead(serviceRequestModel,'./getIncidentCategory', {
+                    filters: this.getOwnerComponent().createIncidentCategoryFilters(ParentObjectID, TypeCode),
+                    success: function(oData){
+                        that.initIncidentModel(oData);
+                    },
+                    error: this.onIncidentFailed.bind(this)
+                });
 
-                // this.utilityHandler.oModelRead(serviceRequestModel,'./getServiceCategory', {
-                //     filters: this.getOwnerComponent().createIncidentCategoryFilters(selectedData.ParentObjectID, selectedData.TypeCode),
-                //     success: function(oData){
-                //         _self.initIncidentModel(oData);
-                //     },
-                //     error: this.onIncidentFailed.bind(this)
-                // });
+
+
 			}
 		},
 

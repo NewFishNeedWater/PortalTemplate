@@ -2,7 +2,7 @@ const DESTINATION_MAP = {
  "default": {
     "Name": "c4c",
     "Type": "HTTP",
-    "URL": "https://my306768.vlab.sapbydesign.com",
+    "URL": "https://qxl-cust238.dev.sapbydesign.com",
     "Authentication": "BasicAuthentication",
     "ProxyType": "Internet",
     "Description": "retrieve data from C4C",
