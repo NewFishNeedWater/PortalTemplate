@@ -91,6 +91,7 @@ sap.ui.define([
 				url: url,
 				success: function(result) {
                 this.contactID = result[0].ContactID;
+                this.component.contactUUID = result[0].UUID;
                 var view = this.getView();
                 view.byId("addButton").setEnabled(true);
                 view.byId("downloadButton").setEnabled(true);
