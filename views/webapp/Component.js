@@ -102,7 +102,6 @@ sap.ui.define([
             $.ajax({
                 method: "GET",
                 url: url,
-                async:true,
                 success: function(result) {
                     if(result){
                         result.forEach(function(oServiceRequest) {
