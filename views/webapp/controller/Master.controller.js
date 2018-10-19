@@ -46,6 +46,7 @@ sap.ui.define([
 				iOriginalBusyDelay = oList.getBusyIndicatorDelay();
 			this.utilityHandler = new UtilityHandler();
 			var eventBus = sap.ui.getCore().getEventBus();
+            this.app = this.component.getAggregation("rootControl");
 			eventBus.subscribe("Detail", "DetailHasRendered", function() {
 			});
 			this._oList = oList;
@@ -572,7 +573,6 @@ sap.ui.define([
 
 			this.oDialog.setBusy(true);
 			if (!this.mockData) {
-				//TODO migrate to node js??
 				var model = view.getModel(),
 					url = model.sServiceUrl + "/ServiceRequestCollection",
 					// token = model.getSecurityToken();
@@ -613,23 +613,23 @@ sap.ui.define([
 		setTicketDescription: function(result) {
 			if (!this.mockData) {
 				var model = this.getModel(),
-					authorUUID = this.component.contactUUID,
-					elm = result.getElementsByTagName("id")[0],
-					baseUrl = elm.innerHTML || elm.textContent,
-					url = baseUrl + "/ServiceRequestDescription",
-					text = sap.ui.getCore().byId("createDescription").getValue(),
-					token = model.getSecurityToken();
-                //TODO migrate to node js??
+					authorUUID = this.component.contactUUID;
+					// elm = result.getElementsByTagName("id")[0],
+					// baseUrl = elm.innerHTML || elm.textContent,
+					var baseID = result.ObjectID;
+					var url = "./postServiceRequestDescription",
+					text = sap.ui.getCore().byId("createDescription").getValue();
+					//token = model.getSecurityToken();
 				jQuery.ajax({
 					url: url,
 					method: "POST",
 					contentType: "application/json",
-					headers: {
-						"X-CSRF-TOKEN": token
-					},
+					// headers: {
+					// 	"X-CSRF-TOKEN": token
+					// },
 					data: JSON.stringify({
-						TypeCode: "10004",
-						AuthorUUID: authorUUID,
+                        baseID: baseID,
+                        AuthorUUID: authorUUID,
 						Text: text
 					}),
 					success: function() {
@@ -892,7 +892,12 @@ sap.ui.define([
 					if (mParams.error) {
 						return;
 					}
+					// In case no data found in list.
 					this.getRouter().getTargets().display("detailNoObjectsAvailable");
+                    var view = this.getView();
+                    view.byId("addButton").setEnabled(true);
+                    view.byId("downloadButton").setEnabled(true);
+                    this.app.setBusy(false);
 				}.bind(this)
 			);
 		},

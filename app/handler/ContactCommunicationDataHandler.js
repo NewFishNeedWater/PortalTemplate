@@ -7,11 +7,13 @@ function getContactCommunicationData (req, res){
     let path = "ContactCommunicationDataCollection?$format=json&$expand=AccountContactRelationship&$filter=EMail eq %27" + req.query.userEmail + "%27";
   c4capi.fetchODataData(service, path).then(function(oContactCommunicationData) {
       if(oContactCommunicationData.length>0){
-          let sUUID = oContactCommunicationData[0].AccountContactRelationship.ContactUUID;
+          let sUUID = oContactCommunicationData[0].AccountContactRelationship ? oContactCommunicationData[0].AccountContactRelationship.ContactUUID : '';
           let service = c4cconfig.BYD_ODATA + 'c4codata';
           let path = "ContactCollection?$format=json&$filter=ObjectID eq %27" + sUUID.split("-").join("") + "%27";
           c4capi.fetchODataData(service,path).then(function(oContact){
               res.status(200).send(oContact);
+          }).catch(function(reason){
+              res.send(reason);
           });
       }
   });

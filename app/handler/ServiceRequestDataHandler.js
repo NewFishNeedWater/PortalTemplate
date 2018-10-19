@@ -12,6 +12,8 @@ function getServicePriorityCode (req, res){
     }
     c4capi.fetchODataData(service, path).then(function(response) {
         res.status(200).send(response);
+    }).catch(function(reason){
+        res.send(reason);
     });
 }
 
@@ -21,6 +23,8 @@ function getServiceRequestLifeCycleStatusCode (req, res){
     let path = "ServiceRequestServiceRequestLifeCycleStatusCodeCollection";
     c4capi.fetchODataData(service, path).then(function(response) {
         res.status(200).send(response);
+    }).catch(function(reason){
+        res.send(reason);
     });
 }
 
@@ -33,6 +37,8 @@ function getProductCollection(req, res){
     }
     c4capi.fetchODataData(service, path).then(function(response) {
         res.status(200).send(response);
+    }).catch(function(reason){
+        res.send(reason);
     });
 }
 
@@ -45,6 +51,8 @@ function getServiceCategory(req, res){
     }
     c4capi.fetchODataData(service, path).then(function(response) {
         res.status(200).send(response);
+    }).catch(function(reason){
+        res.send(reason);
     });
 }
 
@@ -57,6 +65,8 @@ function getServiceRequests(req, res){
     }
     c4capi.fetchODataData(service, path).then(function(response) {
          res.status(200).send(response);
+    }).catch(function(reason){
+        res.send(reason);
     });
 }
 
@@ -66,9 +76,27 @@ function postServiceRequests(req, res){
     var oData =  req.body;
     c4capi.postODataData(service, path, oData).then(function(response) {
         res.status(201).send(response);
+    }).catch(function(reason){
+        res.send(reason);
     });
 }
 
+function postServiceRequestDescription(req, res){
+    var oData =  req.body;
+    var baseID = oData.baseID;
+    let service = c4cconfig.BYD_ODATA + 'c4codata';
+    var requestData = {
+        TypeCode: "10004",
+        AuthorUUID: oData.AuthorUUID,
+        Text: oData.Text
+    };
+    let path = "ServiceRequestCollection('"  + baseID + "')/ServiceRequestDescription";
+    c4capi.postODataData(service, path, requestData).then(function(response) {
+        res.status(201).send(response);
+    }).catch(function(reason){
+        res.send(reason);
+    });
+}
 
 function getServiceIssueCategoryCatalogueCategory(req, res){
     let service = c4cconfig.BYD_ODATA + 'c4codata';
@@ -79,6 +107,8 @@ function getServiceIssueCategoryCatalogueCategory(req, res){
     }
     c4capi.fetchODataData(service, path).then(function(response) {
         res.status(200).send(response);
+    }).catch(function(reason){
+        res.send(reason);
     });
 }
 
@@ -92,6 +122,8 @@ function getIncidentCategory(req, res){
     }
     c4capi.fetchODataData(service, path).then(function(response) {
         res.status(200).send(response);
+    }).catch(function(reason){
+        res.send(reason);
     });
 }
 
@@ -104,6 +136,8 @@ function getProduct(req, res){
     }
     c4capi.fetchODataData(service, path).then(function(response) {
         res.status(200).send(response);
+    }).catch(function(reason){
+        res.send(reason);
     });
 }
 
