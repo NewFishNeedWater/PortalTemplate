@@ -121,16 +121,6 @@ sap.ui.define([
 				var incidentModel = mockModelData.IncidentModel;
 				this.initIncidentModel(incidentModel[parentObject]);
 			} else {
-                // oModel.read(URLS.ServiceCategory, {
-                //     filters: this.getOwnerComponent().createIncidentCategoryFilters(parentObject, typeCode),
-                //     success: _self.initIncidentModel.bind(_self),
-                //     error: function(jqXHR) {
-                //         var error = jqXHR.responseJSON.error.message.value;
-                //         MessageBox.error(error);
-                //         sap.ui.getCore().byId("createIncidentCategory").setBusy(false);
-                //     }
-                // });
-
                 this.utilityHandler.oModelRead(oModel, './getServiceCategory', {
                     filters: this.getOwnerComponent().createIncidentCategoryFilters(parentObject, typeCode),
                     success: function(oData){
@@ -230,6 +220,7 @@ sap.ui.define([
 		 */
 		onRefresh: function() {
 			this._oList.getBinding("items").refresh();
+			this.refreshServiceRequestList();
 		},
 
 		/**
@@ -382,15 +373,6 @@ sap.ui.define([
                 ParentObjectID = selectedData.parentObject;
                 TypeCode = selectedData.typeCode;
 
-
-                 /*serviceRequestModel.read(URLS.ServiceCategory, {
-                     filters: this.getOwnerComponent().createIncidentCategoryFilters(selectedData.ParentObjectID, selectedData.TypeCode),
-                     success: this.onIncidentLoaded.bind(this),
-                     error: this.onIncidentFailed.bind(this)
-                 });
-                var parentObject = serviceRequestModel.getData().ServiceIssueCategoryCatalogueCategoryCollection[0].ParentObjectID;
-                var incidentModel = serviceRequestModel.getData().IncidentModel;
-                */
                 this.utilityHandler.oModelRead(serviceRequestModel,'./getIncidentCategory', {
                     filters: this.getOwnerComponent().createIncidentCategoryFilters(ParentObjectID, TypeCode),
                     success: function(oData){
@@ -398,8 +380,6 @@ sap.ui.define([
                     },
                     error: this.onIncidentFailed.bind(this)
                 });
-
-
 
 			}
 		},
@@ -718,12 +698,19 @@ sap.ui.define([
 			MessageToast.show("The service request was created successfully");
 			this.oDialog.setBusy(false);
 			this._oList.removeSelections();
-			model.refresh();
 			this.oDialog.close();
+            this.refreshServiceRequestList();
 			if (this.mockData) {
 				this.updateMockItemDetails();
 			}
 		},
+
+        refreshServiceRequestList: function(){
+            var model = this.getModel();
+            this._oList.removeSelections();
+            this.getOwnerComponent().getServiceRequest();
+            model.refresh();
+        },
 		updateMockItemDetails: function() {
 			var items = this._oList.getItems();
 			this._showDetail(items[0]);

@@ -74,53 +74,9 @@ sap.ui.define([
 				});
 				this.setModel(model);
 			} else {
-                /*var model = new JSONModel(jQuery.sap.getModulePath("ServiceRequests") + "/mock/c4codata.json");
-                model.attachRequestCompleted(function() {
-                    this.getData().ServiceRequestCollection.forEach(function(request) {
-                        request.ServiceRequestDescription.forEach(function(description) {
-                            description.CreatedOn = new Date(parseInt(description.CreatedOn.substring(description.CreatedOn.indexOf("(") + 1, description.CreatedOn.indexOf(")"))));
-                        });
-                    });
-                });
 
-                this.setModel(model);*/
-                //this.mockData = false;
-                var model = new JSONModel();
-               // var url ="./getServiceRequests?&$orderby=CreationDateTime%20desc&$filter=(ReporterEmail%20eq%20%27"+sap.ushell.Container.getUser().getEmail()+"%27%20or%20ReporterEmail%20eq%20%27"+sap.ushell.Container.getUser().getEmail()+"%27)%20and%20(ServiceRequestUserLifeCycleStatusCodeText%20ne%20%27Completed%27%20or%20ServiceRequestUserLifeCycleStatusCodeText%20ne%20%27Completed%27)&$expand=ServiceRequestDescription%2cServiceRequestAttachmentFolder";
-                var email = sap.ushell.Container.getUser().getEmail();
-                var url ="./getServiceRequests?$skip=0&$top=20&$orderby=CreationDateTime desc&$filter=(ReporterEmail eq '" +  email + "' or ReporterEmail eq '" + email
-					+ "') and (ServiceRequestUserLifeCycleStatusCodeText ne 'Completed' or ServiceRequestUserLifeCycleStatusCodeText ne 'Completed')&$expand=ServiceRequestDescription,ServiceRequestAttachmentFolder";
-                $.ajax({
-                    method: "GET",
-                    url: url,
-                    async:true,
-                    success: function(result) {
-                        if(result){
-                            result.forEach(function(oServiceRequest) {
-                                if(oServiceRequest.ServiceRequestDescription.length>0){
-                                    oServiceRequest.ServiceRequestDescription.forEach(function(description) {
-                                        description.CreatedOn = new Date(parseInt(description.CreatedOn.substring(description.CreatedOn.indexOf("(") + 1, description.CreatedOn.indexOf(")"))));
-                                    });
-                                }
-                            });
-                        }
-                        model.setData({"ServiceRequestCollection":result});
-                        model.refresh();
+			    this.getServiceRequest();
 
-                    }.bind(this),
-                    error: function(jqXHR) {
-                        var elm = jqXHR.responseXML.getElementsByTagName("message")[0];
-                        var error = elm.innerHTML || elm.textContent;
-                        MessageBox.error(error);
-                    }
-                });
-
-                this.setModel(model);
-
-				/*this.setModel(new JSONModel("/client/c4codata", {
-					useBatch: false
-				}));*/
-				//this._oErrorHandler = new ErrorHandler(this);
 			}
 
 			this.oListSelector = new ListSelector();
@@ -136,6 +92,40 @@ sap.ui.define([
 			this.getRouter().initialize();
 		},
 
+
+        getServiceRequest : function(){
+
+            var model = new JSONModel();
+            var email = sap.ushell.Container.getUser().getEmail();
+            var url ="./getServiceRequests?$skip=0&$top=20&$orderby=CreationDateTime desc&$filter=(ReporterEmail eq '" +  email + "' or ReporterEmail eq '" + email
+                + "') and (ServiceRequestUserLifeCycleStatusCodeText ne 'Completed' or ServiceRequestUserLifeCycleStatusCodeText ne 'Completed')&$expand=ServiceRequestDescription,ServiceRequestAttachmentFolder";
+            $.ajax({
+                method: "GET",
+                url: url,
+                async:true,
+                success: function(result) {
+                    if(result){
+                        result.forEach(function(oServiceRequest) {
+                            if(oServiceRequest.ServiceRequestDescription.length>0){
+                                oServiceRequest.ServiceRequestDescription.forEach(function(description) {
+                                    description.CreatedOn = new Date(parseInt(description.CreatedOn.substring(description.CreatedOn.indexOf("(") + 1, description.CreatedOn.indexOf(")"))));
+                                });
+                            }
+                        });
+                    }
+                    model.setData({"ServiceRequestCollection":result});
+                    model.refresh();
+
+                }.bind(this),
+                error: function(jqXHR) {
+                    var elm = jqXHR.responseXML.getElementsByTagName("message")[0];
+                    var error = elm.innerHTML || elm.textContent;
+                    MessageBox.error(error);
+                }
+            });
+
+            this.setModel(model);
+        },
 		getServiceRequestServicePriorityCodePromise: function(){
             return new Promise(function(resolve, reject) {
             	if(this.functionMetaData.ServiceRequestServicePriorityCodeCollection){
