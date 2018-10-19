@@ -330,21 +330,23 @@ sap.ui.define([
 				model = view.getModel(),
 				sPath = view.getElementBinding().getPath();
 
+
 			if (!this.getOwnerComponent().mockData) {
-				var url = model.sServiceUrl + sPath + "/ServiceRequestAttachmentFolder",
-					token = model.getSecurityToken();
+                var url = './postServiceRequestAttachment', //model.sServiceUrl + sPath + "/ServiceRequestAttachmentFolder",
+					//token = model.getSecurityToken();
+                baseID = this.getModel().getObject(sPath).ObjectID;
 				var dataMock = {
 					Name: this.fileToUpload.name,
-					Binary: window.btoa(e.target.result)
+					Binary: window.btoa(e.target.result),
+                    baseID: baseID
 				};
-				//TODO to migrate to node js?
 				jQuery.ajax({
 					url: url,
 					method: "POST",
 					contentType: "application/json",
-					headers: {
-						"X-CSRF-TOKEN": token
-					},
+					// headers: {
+					// 	"X-CSRF-TOKEN": token
+					// },
 					data: JSON.stringify(dataMock),
 					success: function() {
 						view.byId("fileUploader").clear();

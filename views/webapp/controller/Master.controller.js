@@ -668,22 +668,23 @@ sap.ui.define([
 		uploadFile: function(e, result) {
 			var model = this.getModel();
 			if (!this.mockData) {
-				var elmMock = result.getElementsByTagName("id")[0],
-					baseUrl = elmMock.innerHTML || elmMock.textContent,
-					url = baseUrl + "/ServiceRequestAttachmentFolder",
-					token = model.getSecurityToken();
+				// var elmMock = result.getElementsByTagName("id")[0],
+				// 	baseUrl = elmMock.innerHTML || elmMock.textContent,
+				// 	url = baseUrl + "/ServiceRequestAttachmentFolder",
+				// 	token = model.getSecurityToken();
 				var dataMock = {
 					Name: this.fileToUpload.name,
-					Binary: window.btoa(e.target.result)
+					Binary: window.btoa(e.target.result),
+                    baseID: result.ObjectID
 				};
-                //TODO migrate to node js??
+                var url = './postServiceRequestAttachment';
 				jQuery.ajax({
 					url: url,
 					method: "POST",
 					contentType: "application/json",
-					headers: {
-						"X-CSRF-TOKEN": token
-					},
+					// headers: {
+					// 	"X-CSRF-TOKEN": token
+					// },
 					data: JSON.stringify(dataMock),
 					success: this.finishCreateTicket.bind(this),
 					error: function(jqXHR) {

@@ -98,6 +98,23 @@ function postServiceRequestDescription(req, res){
     });
 }
 
+function postServiceRequestAttachment(req, res){
+    var oData =  req.body;
+    var baseID = oData.baseID;
+    let service = c4cconfig.BYD_ODATA + 'c4codata';
+    var requestData = {
+        Name: oData.Name,
+        Binary: oData.Binary
+    };
+    let path = "ServiceRequestCollection('"  + baseID + "')/ServiceRequestAttachmentFolder";
+    c4capi.postODataData(service, path, requestData).then(function(response) {
+        res.status(201).send(response);
+    }).catch(function(reason){
+        res.send(reason);
+    });
+}
+
+
 function getServiceIssueCategoryCatalogueCategory(req, res){
     let service = c4cconfig.BYD_ODATA + 'c4codata';
     let path = "ServiceIssueCategoryCatalogueCategoryCollection";
@@ -175,5 +192,6 @@ module.exports = {
     getProduct,
     getProductCollection,
     postServiceRequests,
-    postServiceRequestDescription
+    postServiceRequestDescription,
+    postServiceRequestAttachment
 };
