@@ -220,6 +220,7 @@ sap.ui.define([
 		 */
 		onRefresh: function() {
 			this._oList.getBinding("items").refresh();
+			this.refreshServiceRequestList();
 		},
 
 		/**
@@ -697,13 +698,18 @@ sap.ui.define([
 			this.oDialog.setBusy(false);
 			this._oList.removeSelections();
 			this.oDialog.close();
-            this.getOwnerComponent().getServiceRequest();
-            model.refresh();
+            this.refreshServiceRequestList();
 			if (this.mockData) {
 				this.updateMockItemDetails();
 			}
 		},
 
+        refreshServiceRequestList: function(){
+            var model = this.getModel();
+            this._oList.removeSelections();
+            this.getOwnerComponent().getServiceRequest();
+            model.refresh();
+        },
 		updateMockItemDetails: function() {
 			var items = this._oList.getItems();
 			this._showDetail(items[0]);
