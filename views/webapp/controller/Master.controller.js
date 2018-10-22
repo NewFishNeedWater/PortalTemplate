@@ -668,9 +668,12 @@ sap.ui.define([
 					data: JSON.stringify(dataMock),
 					success: this.finishCreateTicket.bind(this),
 					error: function(jqXHR) {
-						var elm = jqXHR.responseXML.getElementsByTagName("message")[0];
-						var error = elm.innerHTML || elm.textContent;
-						MessageBox.error("The service request was created successfully, but the attachment could not be uploaded: " + error);
+                        var error = 'The service request was created successfully, but the attachment could not be uploaded';
+                        if( jqXHR.responseXML && jqXHR.responseXML.getElementsByTagName("message") ){
+                            var elm = jqXHR.responseXML.getElementsByTagName("message")[0];
+                            error = "The service request was created successfully, but the attachment could not be uploaded: " + elm.innerHTML || elm.textContent;
+                        }
+						MessageBox.error(error);
 						this.oDialog.setBusy(false);
 					}
 				});

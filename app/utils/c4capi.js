@@ -101,46 +101,11 @@ function requestEndfunction(error,data,resolve,reject){
     }
 };
 
-/**
- * Posting data to C4C by Standard Ajax
- * @param {string} url
- * @param {object} data
- * @param {object} oSettings
- *         --{function} success
- *         --{function} error
- *         --{function} complete
- *
- *
- */
-function postData(url, data, oSettings){
-    jQuery.ajax({
-        url: url,
-        method: "POST",
-        contentType: "application/json",
-        headers: {
-            "X-CSRF-TOKEN": token
-        },
-        data: JSON.stringify({
-            TypeCode: "10008",
-            AuthorUUID: authorUUID,
-            Text: text
-        }),
-        success: function() {
-            this.getModel().refresh();
-        }.bind(this),
-        error: function(jqXHR) {
-            var error = jqXHR.responseJSON.error.message.value;
-            MessageBox.error(error);
-        },
-        complete: function() {
-            this.app.setBusy(false);
-        }.bind(this)
-    });
-};
+
 
 module.exports = {
     fetchODataData,
     fetchToken,
-    postData,
+    updateODataData,
     postODataData
 }
