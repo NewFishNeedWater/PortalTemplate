@@ -21,6 +21,7 @@ router.get('/getProductCollection', serviceRequestHandler.getProductCollection);
 router.post('/postServiceRequests', serviceRequestHandler.postServiceRequests);
 router.post('/postServiceRequestDescription', serviceRequestHandler.postServiceRequestDescription);
 router.post('/postServiceRequestAttachment', serviceRequestHandler.postServiceRequestAttachment);
+router.patch('/patchServiceRequests', serviceRequestHandler.patchServiceRequests);
 router.get('/getServiceIssueCategoryCatalogueCategory',serviceRequestHandler.getServiceIssueCategoryCatalogueCategory);
 router.get('/getIncidentCategory',serviceRequestHandler.getIncidentCategory);
 router.get('/getProduct',serviceRequestHandler.getProduct);

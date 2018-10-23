@@ -155,23 +155,21 @@ sap.ui.define([
 				authorUUID = this.getOwnerComponent().contactUUID,
 				text = oEvent.getSource().getValue();
 			if (!this.getOwnerComponent().mockData) {
-				var url = model.sServiceUrl + sPath + "/ServiceRequestDescription",
-					token = model.getSecurityToken();
+                var baseID = this.getModel().getObject(sPath).ObjectID;
+				var url = './postServiceRequestDescription';
 				this.app.setBusy(true);
-
-
-                //TODO: migrate to node js?
 				jQuery.ajax({
 					url: url,
 					method: "POST",
 					contentType: "application/json",
-					headers: {
-						"X-CSRF-TOKEN": token
-					},
+					// headers: {
+					// 	"X-CSRF-TOKEN": token
+					// },
 					data: JSON.stringify({
 						TypeCode: "10008",
 						AuthorUUID: authorUUID,
-						Text: text
+						Text: text,
+                        baseID: baseID
 					}),
 					success: function() {
 						this.getModel().refresh();
@@ -219,12 +217,14 @@ sap.ui.define([
 		},
 		onSave: function() {
 			var view = this.getView(),
+                sPath = view.getElementBinding().getPath(),
 				model = view.getModel();
 			var patch = {
 				ServicePriorityCode: view.byId("infoPrioritySelect").getSelectedKey(),
 				ProductID: view.byId("infoProductCategorySelect").getSelectedKey(),
 				ServiceIssueCategoryID: view.byId("infoServiceCategorySelect").getSelectedKey(),
-				IncidentServiceIssueCategoryID: view.byId("infoIncidentCategorySelect").getSelectedKey()
+				IncidentServiceIssueCategoryID: view.byId("infoIncidentCategorySelect").getSelectedKey(),
+                baseID:  this.getModel().getObject(sPath).ObjectID
 			};
 
 			var patchMock = {
@@ -247,17 +247,16 @@ sap.ui.define([
 				this._setEditMode(false);
 			} else {
 				this.app.setBusy(true);
-				var sPath = view.getElementBinding().getPath(),
-					url = model.sServiceUrl + sPath,
-					token = model.getSecurityToken();
-				//TODO: migrate to node js?
+				// var sPath = view.getElementBinding().getPath(),
+				var url = './patchServiceRequests';
+				// token = model.getSecurityToken();
 				jQuery.ajax({
 					url: url,
 					method: "PATCH",
 					contentType: "application/json",
-					headers: {
-						"X-CSRF-TOKEN": token
-					},
+					// headers: {
+					// 	"X-CSRF-TOKEN": token
+					// },
 					data: JSON.stringify(patch),
 					success: function() {
 						MessageToast.show("The service request was updated successfully");
@@ -286,16 +285,17 @@ sap.ui.define([
 				oView = this.getView();
 			this.app.setBusy(true);
 			var sPath = oView.getElementBinding().getPath(),
-				url = oModel.sServiceUrl + sPath,
-				token = oModel.getSecurityToken();
-			//TODO to set to node js
+				url = './patchServiceRequests'
+
+            patch.baseID = this.getModel().getObject(sPath).ObjectID;
+
 			jQuery.ajax({
 				url: url,
 				method: "PATCH",
 				contentType: "application/json",
-				headers: {
-					"X-CSRF-TOKEN": token
-				},
+				// headers: {
+				// 	"X-CSRF-TOKEN": token
+				// },
 				data: JSON.stringify(patch),
 				success: function() {
 					MessageToast.show("The service request was set to completed");
@@ -355,8 +355,11 @@ sap.ui.define([
 						this.getModel().refresh();
 					}.bind(this),
 					error: function(jqXHR) {
-						var elm = jqXHR.responseXML.getElementsByTagName("message")[0];
-						var error = elm.innerHTML || elm.textContent;
+                        var error = 'the attachment could not be uploaded';
+						if( jqXHR.responseXML && jqXHR.responseXML.getElementsByTagName("message") ){
+                            var elm = jqXHR.responseXML.getElementsByTagName("message")[0];
+                            error = elm.innerHTML || elm.textContent;
+						}
 						MessageBox.error(error);
 					},
 					complete: function() {

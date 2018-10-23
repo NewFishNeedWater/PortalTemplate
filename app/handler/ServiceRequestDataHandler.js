@@ -81,6 +81,19 @@ function postServiceRequests(req, res){
     });
 }
 
+function patchServiceRequests(req, res){
+    let service = c4cconfig.BYD_ODATA + 'c4codata';
+    var oData =  req.body;
+    var baseID = oData.baseID;
+    oData.baseID = undefined;
+    let path = "ServiceRequestCollection('"  + baseID + "')";
+    c4capi.updateODataData(service, path, oData).then(function(response) {
+        res.status(204).send(response);
+    }).catch(function(reason){
+        res.send(reason);
+    });
+}
+
 function postServiceRequestDescription(req, res){
     var oData =  req.body;
     var baseID = oData.baseID;
@@ -191,6 +204,7 @@ module.exports = {
     getIncidentCategory,
     getProduct,
     getProductCollection,
+    patchServiceRequests,
     postServiceRequests,
     postServiceRequestDescription,
     postServiceRequestAttachment
