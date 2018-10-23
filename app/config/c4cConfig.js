@@ -15,9 +15,6 @@ const AUTHORIZATION = ()=> {
 
 module.exports =  {
     HOST: HOST(),
-    ODATA: HOST() + "/sap/c4c/odata/v1/",
-    CUST_ODATA: HOST() + "/sap/c4c/odata/cust/v1/",
     BYD_ODATA: HOST() + "/sap/byd/odata/v1/",
-    SCP_ODATA:"/sap/rest/user/scim/",
     AUTHORIZATION: AUTHORIZATION()
 }
