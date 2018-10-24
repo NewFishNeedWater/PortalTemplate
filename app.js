@@ -8,8 +8,9 @@ const bodyParser = require('body-parser');
 const serviceRequestRouter = require('./app/routes/ServiceRequest');
 const app = express();
 
+const cors = require('cors');
 
-
+app.use(cors());
 app.use(logger('dev'));
 app.use(express.json({limit:'100mb'}));
 app.use(express.urlencoded({ extended: false }));
@@ -29,14 +30,14 @@ app.set('view engine', 'html');
 */
 
 //cross domain
-app.all('*', function(req, res, next) {
+/*app.all('*', function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "x-requested-with, accept, origin, content-type");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
     res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
     res.header("X-Powered-By",' 3.2.1');
     res.header("Content-Type", "application/json;charset=utf-8");
     next();
-});
+});*/
 
 
 // catch 404 and forward to error handler
