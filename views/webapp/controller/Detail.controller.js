@@ -157,7 +157,9 @@ sap.ui.define([
 			if (!this.getOwnerComponent().mockData) {
                 var baseID = this.getModel().getObject(sPath).ObjectID;
 				var url = './postServiceRequestDescription';
-				this.app.setBusy(true);
+				//this.app.setBusy(true);
+                var detailView = this.getModel("detailView");
+                detailView.setProperty("/busy", true);
 				jQuery.ajax({
 					url: url,
 					method: "POST",
@@ -172,7 +174,8 @@ sap.ui.define([
                         baseID: baseID
 					}),
 					success: function() {
-						this.getModel().refresh();
+						//this.getModel().refresh();
+						this.loadTicketDetail();
 					}.bind(this),
 					error: function(jqXHR) {
 						//var error = jqXHR.responseJSON.error.message.value;
@@ -246,7 +249,9 @@ sap.ui.define([
 				model.refresh(true);
 				this._setEditMode(false);
 			} else {
-				this.app.setBusy(true);
+				// this.app.setBusy(true);
+                var detailView = this.getModel("detailView");
+                detailView.setProperty("/busy", true);
 				// var sPath = view.getElementBinding().getPath(),
 				var url = './patchServiceRequests';
 				// token = model.getSecurityToken();
@@ -268,10 +273,52 @@ sap.ui.define([
 						MessageBox.error(error);
 					},
 					complete: function() {
-						this.app.setBusy(false);
-						this._setEditMode(false);
+						// this.app.setBusy(false);
+						// this._setEditMode(false);
+                        this.loadTicketDetail();
 					}.bind(this)
 				});
+			}
+		},
+
+		loadTicketDetail:function(){
+            var view = this.getView(),
+                sPath = view.getElementBinding().getPath(),
+                model = view.getModel();
+            var baseID = this.getModel().getObject(sPath).ObjectID;
+            var url = './getServiceRequests?&ObjectID=\'' + baseID + '\'&$expand=ServiceRequestDescription,ServiceRequestAttachmentFolder';
+            jQuery.ajax({
+                url: url,
+                method: "GET",
+                contentType: "application/json",
+                success: function(oData) {
+                	if(oData.error){
+                		this._onErrorMessageFound(oData.error);
+					}else{
+                        model.setProperty(sPath, oData);
+                        model.refresh(true);
+                        this.getOwnerComponent().oListSelector.selectAListItem(sPath);
+                        this._populateDescriptionsList(sPath);
+                        this._populateAttachmentsList(sPath);
+					}
+                }.bind(this),
+                error: function(jqXHR) {
+                    var elm = jqXHR.responseText.getElementsByTagName("message")[0];
+                    var error = elm.innerHTML || elm.textContent;
+                    MessageBox.error(error);
+                },
+                complete: function() {
+                    //this.app.setBusy(false);
+                    var detailView = this.getModel("detailView");
+                    detailView.setProperty("/busy", false);
+                    this._setEditMode(false);
+                }.bind(this)
+            });
+		},
+
+		_onErrorMessageFound: function(oError){
+            if(oError.message && oError.message.value){
+                MessageBox.error(oError.message.value);
 			}
 		},
 
@@ -283,7 +330,9 @@ sap.ui.define([
 			var patch = {ServiceRequestLifeCycleStatusCode: "3"},
 				oModel = this.getModel(),
 				oView = this.getView();
-			this.app.setBusy(true);
+			//this.app.setBusy(true);
+            var detailView = this.getModel("detailView");
+            detailView.setProperty("/busy", true);
 			var sPath = oView.getElementBinding().getPath(),
 				url = './patchServiceRequests'
 
@@ -307,8 +356,9 @@ sap.ui.define([
 					MessageBox.error(error);
 				},
 				complete: function() {
-					this.app.setBusy(false);
-					this._setEditMode(false);
+					// this.app.setBusy(false);
+					this.loadTicketDetail();
+					// this._setEditMode(false);
 				}.bind(this)
 			});
 		},
@@ -317,7 +367,9 @@ sap.ui.define([
 		},
 		onFileUpload: function() {
 			if (this.fileToUpload) {
-				this.app.setBusy(true);
+				//this.app.setBusy(true);
+                var detailView = this.getModel("detailView");
+                detailView.setProperty("/busy", true);
 				var fileReader = new FileReader();
 				fileReader.onload = this.uploadFile.bind(this);
 				fileReader.readAsBinaryString(this.fileToUpload);
@@ -329,7 +381,6 @@ sap.ui.define([
 			var view = this.getView(),
 				model = view.getModel(),
 				sPath = view.getElementBinding().getPath();
-
 
 			if (!this.getOwnerComponent().mockData) {
                 var url = './postServiceRequestAttachment', //model.sServiceUrl + sPath + "/ServiceRequestAttachmentFolder",
@@ -363,7 +414,8 @@ sap.ui.define([
 						MessageBox.error(error);
 					},
 					complete: function() {
-						this.app.setBusy(false);
+						//this.app.setBusy(false);
+                        this.loadTicketDetail();
 					}.bind(this)
 				});
 			} else {
