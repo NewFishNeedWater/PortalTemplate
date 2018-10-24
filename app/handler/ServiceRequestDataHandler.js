@@ -113,7 +113,7 @@ function postServiceRequestDescription(req, res){
     var baseID = oData.baseID;
     let service = c4cconfig.BYD_ODATA + 'c4codata';
     var requestData = {
-        TypeCode: "10004",
+        TypeCode: "10008",
         AuthorUUID: oData.AuthorUUID,
         Text: oData.Text
     };
