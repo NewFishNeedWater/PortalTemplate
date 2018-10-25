@@ -1,5 +1,5 @@
 
-const DESTINATION_MAP = require(process.cwd() + '/app/store/DesinationMap.js');
+const DESTINATION_MAP = require(process.cwd() + '/app/store/DestinationMap.js');
 
 const HOST = ()=>{
   const oDest = DESTINATION_MAP.getActiveProperty();
@@ -17,4 +17,4 @@ module.exports =  {
     HOST: HOST(),
     BYD_ODATA: HOST() + "/sap/byd/odata/v1/",
     AUTHORIZATION: AUTHORIZATION()
-}
+};
