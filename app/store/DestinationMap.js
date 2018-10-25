@@ -1,8 +1,10 @@
+const destination = require(process.cwd() + '/app/store/Destination.js');
+
 const DESTINATION_MAP = {
  "default": {
     "Name": "c4c",
     "Type": "HTTP",
-    "URL": "https://qxl-cust238.dev.sapbydesign.com/",
+    "URL": "https://my306768.vlab.sapbydesign.com/",
     "Authentication": "BasicAuthentication",
     "ProxyType": "Internet",
     "Description": "retrieve data from C4C",
@@ -10,6 +12,7 @@ const DESTINATION_MAP = {
     "Password": "Ondemand1"
   }
 };
+
 
 const ACTIVE_DESINATION = process.env.ACTIVE_DESINATION;
 

@@ -22,12 +22,10 @@ app.use(bodyParser.urlencoded({ limit:'100mb', extended: true }));
 
 app.use('/client', serviceRequestRouter);
 
-/*
 // view engine setup
 app.engine('.html', ejs.__express);
 app.set('views', path.join(__dirname+'/views', 'webapp'));
 app.set('view engine', 'html');
-*/
 
 //cross domain
 /*app.all('*', function(req, res, next) {
