@@ -81,6 +81,31 @@ function getServiceRequests(req, res){
 }
 
 
+function getServiceRequestsCount(req, res){
+    let service = c4cconfig.BYD_ODATA + 'c4codata';
+    let path = "ServiceRequestCollection/$count";
+    let objectID = getObjectIDValue(req);
+    if(objectID){
+        // In case key value: object id could be retrieved.
+        path = path + "("  + objectID + ")";
+    }
+    let searchPath = converstionToOdataParas(req, ['ObjectID']);
+    if(searchPath){
+        path = path + searchPath;
+    }
+    c4capi.fetchODataData(service, path).then(function(response) {
+        if(typeof response === 'object'){
+            return res.status(200).send(response);
+        }else{
+            return res.status(200).send({
+                count:response
+            });
+        }
+
+    }).catch(function(reason){
+        res.send(reason);
+    });
+}
 
 
 
@@ -256,6 +281,7 @@ module.exports = {
     getServiceCategory,
     getServiceRequestDescription,
     getServiceRequests,
+    getServiceRequestsCount,
     getServiceIssueCategoryCatalogueCategory,
     getIncidentCategory,
     getProduct,
