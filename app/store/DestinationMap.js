@@ -4,12 +4,12 @@ const DESTINATION_MAP = {
  "default": {
     "Name": "c4c",
     "Type": "HTTP",
-    "URL": "https://my306768.vlab.sapbydesign.com/",
+    "URL": "https://my304777.crm.ondemand.com/",
     "Authentication": "BasicAuthentication",
     "ProxyType": "Internet",
     "Description": "retrieve data from C4C",
-    "User": "crmops",
-    "Password": "Ondemand1"
+    "User": "ADMINISTRATION01",
+    "Password": "Welcome1"
   }
 };
 
