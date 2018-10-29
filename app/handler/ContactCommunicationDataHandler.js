@@ -1,5 +1,5 @@
-const c4capi = require(process.cwd() + '/app/utils/c4capi.js'),
-    c4cconfig = require(process.cwd() + '/app/config/c4cConfig.js');
+const c4capi = require(process.cwd() + '/app/utils/CloudForCustomerAPI.js'),
+    c4cconfig = require(process.cwd() + '/app/config/CloudForCustomerConfig.js');
 
 // read contact communication data
 function getContactCommunicationData (req, res){

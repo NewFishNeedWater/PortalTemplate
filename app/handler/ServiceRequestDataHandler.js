@@ -1,6 +1,6 @@
-const c4capi = require(process.cwd() + '/app/utils/c4capi.js'),
+const c4capi = require(process.cwd() + '/app/utils/CloudForCustomerAPI.js'),
     url = require("url"),
-    c4cconfig = require(process.cwd() + '/app/config/c4cConfig.js');
+    c4cconfig = require(process.cwd() + '/app/config/CloudForCustomerConfig.js');
 
 // GET Service Request Priority code
 function getServicePriorityCode (req, res){

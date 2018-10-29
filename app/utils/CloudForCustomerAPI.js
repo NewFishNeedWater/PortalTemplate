@@ -1,7 +1,7 @@
-var request = require('request'),
-    c4cconfig = require(process.cwd() + '/app/config/c4cConfig.js');
+const request = require('request'),
+    c4cconfig = require(process.cwd() + '/app/config/CloudForCustomerConfig.js');
 
-var requestC = request.defaults({jar: true});
+const requestC = request.defaults({jar: true});
 
 function fetchToken(service) {// festch x-csrf-token
     return new Promise(function (resolve, reject) {
