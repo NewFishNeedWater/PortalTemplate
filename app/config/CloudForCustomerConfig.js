@@ -5,10 +5,11 @@ const HOST = ()=>{
   const oDest = DESTINATION_MAP.getActiveProperty();
   return oDest.URL;
 };
+
 const AUTHORIZATION = ()=> {
   const oDest = DESTINATION_MAP.getActiveProperty();
-  const user = process.env.userName || oDest.User;
-  const password = process.env.password || oDest.Password;
+  //const user = process.env.userName || oDest.User;
+  //const password = process.env.password || oDest.Password;
   return 'Basic ' + new Buffer(oDest.User + ":" + oDest.Password).toString('base64');
 };
 

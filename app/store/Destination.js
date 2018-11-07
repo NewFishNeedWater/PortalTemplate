@@ -8,7 +8,7 @@ function mapDestination(host){
       var service_info = JSON.parse( process.env.VCAP_SERVICES);
       if(service_info.destination){
         for(var i =0;i < service_info.destination.length;i++){
-          if(service_info.destination[i].name = 'c4codata'){
+          if(service_info.destination[i].name = 'supportportal'){
             target = service_info.destination[i];
             break;
           }

@@ -1,5 +1,5 @@
 const request = require('request'),
-    c4cconfig = require(process.cwd() + '/app/config/CloudForCustomerConfig.js');
+    oC4cConfig = require(process.cwd() + '/app/config/CloudForCustomerConfig.js');
 
 const requestC = request.defaults({jar: true});
 
@@ -12,7 +12,7 @@ function fetchToken(service) {// festch x-csrf-token
             headers: {
                 "content-type": "application/json",
                 "x-csrf-token": "fetch",
-                'Authorization': c4cconfig.AUTHORIZATION
+                'Authorization': oC4cConfig.AUTHORIZATION
             }
         }, function (error, response, data) {
             var csrfToken = response.headers['x-csrf-token']
@@ -42,7 +42,7 @@ function postODataData(service, path, data) {
                 }
             }, function (error, response, data) {
                 console.log({"error": error});
-                requestEndfunction(error, data, resolve, reject);
+                requestEndFunction(error, data, resolve, reject);
             });
         }).catch(function (oEvent) {
             reject();
@@ -58,11 +58,11 @@ function fetchODataData(service, path) {
             json: true,
             headers: {
                 "content-type": "application/json",
-                'Authorization': c4cconfig.AUTHORIZATION
+                'Authorization': oC4cConfig.AUTHORIZATION
             }
         }, function (error, response, data) {
             console.log({"error": error});
-            requestEndfunction(error, data, resolve, reject);
+            requestEndFunction(error, data, resolve, reject);
         });
     });
 }
@@ -81,7 +81,7 @@ function updateODataData(service, path, data) {
                 }
             }, function (error, response, data) {
                 console.log({"error": error});
-                requestEndfunction(error, data, resolve, reject);
+                requestEndFunction(error, data, resolve, reject);
             });
         }).catch(function () {
             reject();
@@ -89,7 +89,7 @@ function updateODataData(service, path, data) {
     });
 }
 
-function requestEndfunction(error, data, resolve, reject) {
+function requestEndFunction(error, data, resolve, reject) {
     if (error) {
         reject(error);
     }
@@ -103,7 +103,6 @@ function requestEndfunction(error, data, resolve, reject) {
 
 module.exports = {
     fetchODataData,
-    fetchToken,
     updateODataData,
     postODataData
 };
