@@ -141,6 +141,10 @@ function postServiceRequests(req, res){
     let service = oC4cConfig.BYD_ODATA + 'c4codata';
     let path = "ServiceRequestCollection";
     var oData =  req.body;
+
+
+    //set the channel to 'internet'
+    oData.DataOriginTypeCode = '4';
     oC4cAPI.postODataData(service, path, oData).then(function(response) {
         res.status(201).send(response);
     }).catch(function(reason){
