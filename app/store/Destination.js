@@ -98,7 +98,13 @@ function getDestination4App() {
         return new Promise(function (resolve, reject) {
             getAccessToken().then(function (token) {
                 getDestination(token).then(function (oDestination) {
+
+                    for(var attr in oDestination){
+                        console.log('attr:' + attr);
+                        console.log('oDestination[attr]' + oDestination[attr]);
+                    }
                     resolve(oDestination);
+
                 }).catch(function(oError){
                     reject({'error':oError});
                 });
