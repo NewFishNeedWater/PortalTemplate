@@ -1,4 +1,4 @@
-const destination = require(process.cwd() + '/app/store/Destination.js');
+const oDestination = require(process.cwd() + '/app/store/Destination.js');
 
 const DESTINATION_MAP = {
  "default": {
@@ -10,14 +10,23 @@ const DESTINATION_MAP = {
     "Description": "retrieve data from C4C",
     "User": "ADMINISTRATION01",
     "Password": "Welcome1"
+   /*  "URL": "https://a6p-cust206.dev.sapbydesign.com/",
+     "User": "CRMOPS",
+     "Password": "Ondemand1"*/
   }
 };
 
 
 const ACTIVE_DESINATION = process.env.ACTIVE_DESINATION;
 
+
 function getActiveProperty(){
-  return DESTINATION_MAP[ACTIVE_DESINATION] || DESTINATION_MAP.default;
+
+    let service = new oDestination();
+
+    return service.getDestinationSync();
+
+  //return DESTINATION_MAP[ACTIVE_DESINATION] || DESTINATION_MAP.default;
 }
 
 function setProperty(host,key,value){
