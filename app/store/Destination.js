@@ -90,7 +90,9 @@ function getDestination(token) {
 
 
 async function getDestinationSync() {
-        return await getDestination4App();
+       let result =  await getDestination4App();
+       console.log('result:' + result);
+       return result;
 }
 
 function getDestination4App() {
