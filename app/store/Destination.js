@@ -62,7 +62,7 @@ function getDestination(token) {
 
     return new Promise(function (resolve, reject) {
         let options = {
-            url: oDestination.credentials.uri + '/destination-configuration/v1/instanceDestinations',
+            url: oDestination.credentials.uri + '/destination-configuration/v1/destinations/C4CBackEnd',
             method: "GET",
             json: true,
             headers: {
