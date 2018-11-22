@@ -22,10 +22,7 @@ const ACTIVE_DESINATION = process.env.ACTIVE_DESINATION;
 
 function getActiveProperty(){
 
-    let service = new oDestination();
-
-    return service.getDestinationSync();
-
+  return  oDestination.getDestinationSync();
   //return DESTINATION_MAP[ACTIVE_DESINATION] || DESTINATION_MAP.default;
 }
 

@@ -1,9 +1,8 @@
 const request = require('request');
 
-const async = require('async');
+function mapDestination() {
 
-
-function getDestinationInfo(){
+    this.getDestinationInfo = function () {
         let target = null;
         if (process.env.VCAP_SERVICES) {
             let service_info = JSON.parse(process.env.VCAP_SERVICES);
@@ -17,10 +16,10 @@ function getDestinationInfo(){
             }
         }
         return target;
-}
+    };
 
-function getAccessToken() {
-        var oDestination = getDestinationInfo();
+    this.getAccessToken = function () {
+        var oDestination = this.getDestinationInfo();
         console.log(oDestination);
         if (!oDestination) {
             return Promise.reject();
@@ -51,57 +50,59 @@ function getAccessToken() {
 
             });
         });
-}
+    };
 
-function getDestination(token) {
-    let oDestination = getDestinationInfo();
-    console.log(token);
-    if (!token) {
-        return null;
-    }
+    this.getDestination = function (token) {
+        let oDestination = this.getDestinationInfo();
+        console.log(token);
+        if (!token) {
+            return null;
+        }
 
-    return new Promise(function (resolve, reject) {
-        let options = {
-            url: oDestination.credentials.uri + '/destination-configuration/v1/instanceDestinations',
-            method: "GET",
-            json: true,
-            headers: {
-                "content-type": "application/json",
-                'Authorization': 'Bearer ' + token
-            }
-        };
-        request(options, function (error, response, data) {
-            if (data) {
-                resolve(data);
-            } else {
-                reject()
-            }
+        return new Promise(function (resolve, reject) {
+            let options = {
+                url: oDestination.credentials.uri + '/destination-configuration/v1/instanceDestinations',
+                method: "GET",
+                json: true,
+                headers: {
+                    "content-type": "application/json",
+                    'Authorization': 'Bearer ' + token
+                }
+            };
+            request(options, function (error, response, data) {
+                if (data) {
+                    resolve(data);
+                } else {
+                    reject()
+                }
 
+            });
         });
-    });
-}
+    };
 
 
-async function getDestinationSync() {
-        return await getDestination4App();
-}
+    this.getDestinationSync = async function () {
+        return await this.getDestination4App();
+    };
 
-function getDestination4App() {
+    this.getDestination4App = function () {
+        let that = this;
         console.log('Enter: getDestination4App');
         return new Promise(function (resolve, reject) {
-            getAccessToken().then(function (token) {
-                getDestination(token).then(function (oDestination) {
+            that.getAccessToken().then(function (token) {
+                that.getDestination(token).then(function (oDestination) {
                     resolve(oDestination);
-                }).catch(function(oError){
+                }.bind(this)).catch(function(oError){
                     reject({'error':oError});
                 });
-            }).catch(function(oError){
+            }.bind(this)).catch(function(oError){
                 reject({'error':oError});
             });
         });
 
+    };
+
+
 }
 
-module.exports = {
-    getDestinationSync
-};
+module.exports = mapDestination;

@@ -1,9 +1,11 @@
 
 const DESTINATION_MAP = require(process.cwd() + '/app/store/DestinationMap.js');
+const destination = require(process.cwd() + '/app/store/Destination.js');
 
 const HOST = ()=>{
   const oDest = DESTINATION_MAP.getActiveProperty();
   return oDest.URL;
+
 };
 
 const AUTHORIZATION = ()=> {
