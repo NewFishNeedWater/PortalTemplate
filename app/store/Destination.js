@@ -20,11 +20,16 @@ function getDestinationInfo(){
 }
 
 function getAccessToken() {
+    console.log('Enter: getAccessToken');
         var oDestination = getDestinationInfo();
-        console.log(oDestination);
+        console.log('oDestination' + oDestination);
         if (!oDestination) {
             return Promise.reject();
         }
+
+        console.log('oDestination.credentials:' + oDestination.credentials);
+
+        console.log('Base64:' + Buffer.from(oDestination.credentials.clientid + ":" + oDestination.credentials.clientsecret).toString('base64'))
 
         return new Promise(function (resolve, reject) {
             let options = {
@@ -33,7 +38,7 @@ function getAccessToken() {
                 json: true,
                 headers: {
                     "content-type": "application/x-www-form-urlencoded",
-                    'Authorization': 'Basic ' + new Buffer(oDestination.credentials.clientid + ":" + oDestination.credentials.clientsecret).toString('base64')
+                    'Authorization': 'Basic ' +  Buffer.from(oDestination.credentials.clientid + ":" + oDestination.credentials.clientsecret).toString('base64')
                 },
                 form: {
                     client_id: oDestination.credentials.clientid,
@@ -55,7 +60,7 @@ function getAccessToken() {
 
 function getDestination(token) {
     let oDestination = getDestinationInfo();
-    console.log(token);
+    console.log('token:' + token);
     if (!token) {
         return null;
     }
@@ -72,8 +77,10 @@ function getDestination(token) {
         };
         request(options, function (error, response, data) {
             if (data) {
+                console.log('getDestionation: success:' + data);
                 resolve(data);
             } else {
+                console.log('getDestionation: reject:' + data);
                 reject()
             }
 
