@@ -2,6 +2,8 @@
 const configurationService = require(process.cwd() + '/app/store/Configuration.js');
 const oHostAndAuthorization = {};
 
+const sURLFix= "/sap/byd/odata/v1/";
+
 const getHostAndAuthorization = () => {
 
     return new Promise(function (resolve, reject) {
@@ -13,7 +15,7 @@ const getHostAndAuthorization = () => {
                 && oDest.destinationConfiguration.User
                 && oDest.destinationConfiguration.Password
             ){
-                oHostAndAuthorization.sHost= oDest.destinationConfiguration.URL;
+                oHostAndAuthorization.sHost= oDest.destinationConfiguration.URL + sURLFix;
                 oHostAndAuthorization.sAuthorization = 'Basic ' + new Buffer(oDest.destinationConfiguration.User + ":" +
                     oDest.destinationConfiguration.Password).toString('base64');
                 resolve(oHostAndAuthorization);

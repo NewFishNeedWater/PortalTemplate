@@ -1,52 +1,82 @@
 const request = require('request');
+const xsenv = require('@sap/xsenv');
 
 
 
 function getDestinationInfo(){
-        let target = null;
+       /* let target = null;
+
         if (process.env.VCAP_SERVICES) {
+            console.log("Services: " + process.env.VCAP_SERVICES);
             let service_info = JSON.parse(process.env.VCAP_SERVICES);
+            console.log("destinationssssss : " + service_info.destination.length);
             if (service_info.destination) {
                 for (let i = 0; i < service_info.destination.length; i++) {
-                    if (service_info.destination[i].instance_name = 'C4CBackEnd') {
+                    if (service_info.destination[i].instance_name === 'C4CBackEnd') {
                         target = service_info.destination[i];
+                        console.log("target : " + target);
                         break;
                     }
                 }
             }
         }
-        return target;
+        return target;*/
+    var _matchesDestination = function (service) {
+        "use strict";
+        return _matches(service, "destination");
+    };
+    return xsenv.getServices({
+        "destination": _matchesDestination
+    }).destination;
+
+}
+
+function getXSUAAInfo() {
+    var _matchesXSUAA = function (service) {
+        "use strict";
+        return _matches(service, "xsuaa");
+    };
+    return xsenv.getServices({
+        "xsuaa": _matchesXSUAA
+    }).xsuaa;
+}
+
+function _matches(serviceObj, serviceName) {
+    "use strict";
+    if (serviceObj.tags && serviceObj.tags.indexOf(serviceName) > -1) {
+        return true;
+    }
+    else if (serviceObj.label === "user-provided" && serviceObj.credentials.tags && serviceObj.credentials.tags.indexOf(serviceName) > -1) {
+        return true;
+    }
+    return false;
 }
 
 function getAccessToken() {
-    console.log('Enter: getAccessToken');
+
         var oDestination = getDestinationInfo();
-        console.log('oDestination' + oDestination);
+
         if (!oDestination) {
             return Promise.reject();
         }
 
-        console.log('oDestination.credentials:' + oDestination.credentials);
-
-        console.log('Base64:' + Buffer.from(oDestination.credentials.clientid + ":" + oDestination.credentials.clientsecret).toString('base64'))
-
         return new Promise(function (resolve, reject) {
             let options = {
-                url: oDestination.credentials.url + '/oauth/token',
+                url: oDestination.url + '/oauth/token',
                 method: "POST",
                 json: true,
                 headers: {
                     "content-type": "application/x-www-form-urlencoded",
-                    'Authorization': 'Basic ' +  Buffer.from(oDestination.credentials.clientid + ":" + oDestination.credentials.clientsecret).toString('base64')
+                    'Authorization': 'Basic ' +  Buffer.from(oDestination.clientid + ":" + oDestination.clientsecret).toString('base64')
                 },
                 form: {
-                    client_id: oDestination.credentials.clientid,
+                    client_id: oDestination.clientid,
                     grant_type: 'client_credentials'
                 }
             };
-            console.log(options);
+
             request(options, function (error, response, data) {
-                console.log(data);
+
                 if (data && data.access_token) {
                     resolve(data.access_token);
                 } else {
@@ -66,7 +96,7 @@ function getDestination(token) {
 
     return new Promise(function (resolve, reject) {
         let options = {
-            url: oDestination.credentials.uri + '/destination-configuration/v1/destinations/C4CBackEnd',
+            url: oDestination.uri + '/destination-configuration/v1/destinations/C4CBackEnd',
             method: "GET",
             json: true,
             headers: {
@@ -76,10 +106,10 @@ function getDestination(token) {
         };
         request(options, function (error, response, data) {
             if (data) {
-                console.log('getDestionation: success:' + data);
+
                 resolve(data);
             } else {
-                console.log('getDestionation: reject:' + data);
+
                 reject()
             }
 
@@ -93,10 +123,7 @@ function getDestination4App() {
         return new Promise(function (resolve, reject) {
             getAccessToken().then(function (token) {
                 getDestination(token).then(function (oDestination) {
-                    for(var attr in oDestination){
-                        console.log('attr:' + attr);
-                        console.log('oDestination[attr]' + oDestination[attr]);
-                    }
+
                     resolve(oDestination);
 
                 }).catch(function(oError){

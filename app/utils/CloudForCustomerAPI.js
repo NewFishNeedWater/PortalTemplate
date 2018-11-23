@@ -19,8 +19,7 @@ function fetchToken(service) {// festch x-csrf-token
                 }
             }, function (error, response, data) {
                 var csrfToken = response.headers['x-csrf-token'];
-                console.log(csrfToken);
-                console.log(error);
+
                 if (csrfToken) {
                     resolve(csrfToken);
                 } else {
@@ -37,7 +36,7 @@ function postODataData(service, path, data) {
     return new Promise(function (resolve, reject) {
         oC4cConfig.getHostAndAuthorization().then(function (oHostAndAuthorization) {
             fetchToken(service).then(function (csrfToken) {
-                console.log(oHostAndAuthorization.sHost+service + "/" + path);
+
                 requestC({
                     url: oHostAndAuthorization.sHost+service + "/" + path,
                     method: "POST",
@@ -64,6 +63,7 @@ function postODataData(service, path, data) {
 function fetchODataData(service, path) {
     return new Promise(function (resolve, reject) {
         oC4cConfig.getHostAndAuthorization().then(function (oHostAndAuthorization) {
+
                 request({
                     url: oHostAndAuthorization.sHost+service + "/" + path,
                     method: "GET",
@@ -97,7 +97,6 @@ function updateODataData(service, path, data) {
                         'x-csrf-token': csrfToken
                     }
                 }, function (error, response, data) {
-                    console.log({"error": error});
                     requestEndFunction(error, data, resolve, reject);
                 });
             }).catch(function () {

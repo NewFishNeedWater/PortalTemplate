@@ -3,7 +3,7 @@ const destination = require(process.cwd() + '/app/store/Destination.js');
 const oDestinationParent = {};
 
 function saveDestination(oDest){
-    this.oDestinationParent.oDestination =oDest;
+    oDestinationParent.oDestination =oDest;
 }
 
 function getDestination(){
