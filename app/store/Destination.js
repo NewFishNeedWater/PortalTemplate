@@ -1,6 +1,5 @@
 const request = require('request');
 
-const async = require('async');
 
 
 function getDestinationInfo(){
@@ -89,18 +88,11 @@ function getDestination(token) {
 }
 
 
-async function getDestinationSync() {
-       let result =  await getDestination4App();
-       console.log('result:' + result);
-       return result;
-}
-
 function getDestination4App() {
         console.log('Enter: getDestination4App');
         return new Promise(function (resolve, reject) {
             getAccessToken().then(function (token) {
                 getDestination(token).then(function (oDestination) {
-
                     for(var attr in oDestination){
                         console.log('attr:' + attr);
                         console.log('oDestination[attr]' + oDestination[attr]);
@@ -118,5 +110,5 @@ function getDestination4App() {
 }
 
 module.exports = {
-    getDestinationSync
+    getDestination4App
 };

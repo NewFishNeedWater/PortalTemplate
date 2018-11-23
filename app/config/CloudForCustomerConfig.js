@@ -1,29 +1,33 @@
-const DESTINATION_MAP = require(process.cwd() + '/app/store/DestinationMap.js');
-const destination = require(process.cwd() + '/app/store/Destination.js');
 
-const HOST = () => {
-    const oDest = DESTINATION_MAP.getActiveProperty();
-    console.log('oDest: ' + oDest);
-    if (oDest && oDest.destinationConfiguration && oDest.destinationConfiguration.URL) {
-        return oDest.destinationConfiguration.URL;
-    }
+const configurationService = require(process.cwd() + '/app/store/Configuration.js');
+const oHostAndAuthorization = {};
+
+const getHostAndAuthorization = () => {
+
+    return new Promise(function (resolve, reject) {
+
+        configurationService.getDestination().then(function(oDest){
+
+            if(oDest.destinationConfiguration
+                && oDest.destinationConfiguration.URL
+                && oDest.destinationConfiguration.User
+                && oDest.destinationConfiguration.Password
+            ){
+                oHostAndAuthorization.sHost= oDest.destinationConfiguration.URL;
+                oHostAndAuthorization.sAuthorization = 'Basic ' + new Buffer(oDest.destinationConfiguration.User + ":" +
+                    oDest.destinationConfiguration.Password).toString('base64');
+                resolve(oHostAndAuthorization);
+            }else{
+                reject();
+            }
+        }).catch(function(oEvent){
+            reject();
+        });
+
+    });
 
 };
-
-const AUTHORIZATION = () => {
-    const oDest = DESTINATION_MAP.getActiveProperty();
-    console.log('oDest: ' + oDest);
-    //const user = process.env.userName || oDest.User;
-    //const password = process.env.password || oDest.Password;
-    if (oDest && oDest.destinationConfiguration && oDest.destinationConfiguration.User) {
-        return 'Basic ' + new Buffer(oDest.destinationConfiguration.User + ":" + oDest.destinationConfiguration.Password).toString('base64');
-    }
-
-};
-
 
 module.exports = {
-    HOST: HOST(),
-    BYD_ODATA: HOST() + "/sap/byd/odata/v1/",
-    AUTHORIZATION: AUTHORIZATION()
+    getHostAndAuthorization
 };

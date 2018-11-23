@@ -2,23 +2,28 @@ const oC4cAPI = require(process.cwd() + '/app/utils/CloudForCustomerAPI.js'),
     oC4cConfig = require(process.cwd() + '/app/config/CloudForCustomerConfig.js'),
     url = require("url");
 
+const service = 'c4codata';
 /**
  * @public GET Service Request Priority code
  * @param req
  * @param res
  */
 function getServicePriorityCode (req, res){
-    let service = oC4cConfig.BYD_ODATA + 'c4codata';
+
+
     let path = "ServiceRequestServicePriorityCodeCollection";
     let searchPath = converstionToOdataParas(req);
-    if(searchPath){
+    if (searchPath) {
         path = path + searchPath;
     }
-    oC4cAPI.fetchODataData(service, path).then(function(response) {
+    oC4cAPI.fetchODataData(service, path).then(function (response) {
         res.status(200).send(response);
-    }).catch(function(reason){
+    }).catch(function (reason) {
         res.send(reason);
     });
+
+
+
 }
 
 
@@ -28,7 +33,6 @@ function getServicePriorityCode (req, res){
  * @param res
  */
 function getServiceRequestLifeCycleStatusCode (req, res){
-    let service = oC4cConfig.BYD_ODATA + 'c4codata';
     let path = "ServiceRequestServiceRequestLifeCycleStatusCodeCollection";
     oC4cAPI.fetchODataData(service, path).then(function(response) {
         res.status(200).send(response);
@@ -43,7 +47,6 @@ function getServiceRequestLifeCycleStatusCode (req, res){
  * @param res
  */
 function getProducts(req, res){
-    let service = oC4cConfig.BYD_ODATA + 'c4codata';
     let path = "ProductCollection";
     let searchPath = converstionToOdataParas(req);
     if(searchPath){
@@ -62,7 +65,6 @@ function getProducts(req, res){
  * @param res
  */
 function getServiceCategory(req, res){
-    let service = oC4cConfig.BYD_ODATA + 'c4codata';
     let path = "ServiceIssueCategoryCatalogueCategoryCollection";
     let searchPath = converstionToOdataParas(req);
     if(searchPath){
@@ -81,7 +83,6 @@ function getServiceCategory(req, res){
  * @param res
  */
 function getServiceRequests(req, res){
-    let service = oC4cConfig.BYD_ODATA + 'c4codata';
     let path = "ServiceRequestCollection";
     let objectID = getObjectIDValue(req);
     if(objectID){
@@ -106,7 +107,6 @@ function getServiceRequests(req, res){
  * @param res
  */
 function getServiceRequestsCount(req, res){
-    let service = oC4cConfig.BYD_ODATA + 'c4codata';
     let path = "ServiceRequestCollection/$count";
     let objectID = getObjectIDValue(req);
     if(objectID){
@@ -138,7 +138,6 @@ function getServiceRequestsCount(req, res){
  * @param res
  */
 function postServiceRequests(req, res){
-    let service = oC4cConfig.BYD_ODATA + 'c4codata';
     let path = "ServiceRequestCollection";
     var oData =  req.body;
 
@@ -158,7 +157,6 @@ function postServiceRequests(req, res){
  * @param res
  */
 function patchServiceRequests(req, res){
-    let service = oC4cConfig.BYD_ODATA + 'c4codata';
     var oData =  req.body;
     var baseID = oData.baseID;
     oData.baseID = undefined;
@@ -178,7 +176,6 @@ function patchServiceRequests(req, res){
 function postServiceRequestDescription(req, res){
     var oData =  req.body;
     var baseID = oData.baseID;
-    let service = oC4cConfig.BYD_ODATA + 'c4codata';
     var requestData = {
         TypeCode: "10008",
         AuthorUUID: oData.AuthorUUID,
@@ -200,7 +197,6 @@ function postServiceRequestDescription(req, res){
 function postServiceRequestAttachment(req, res){
     var oData =  req.body;
     var baseID = oData.baseID;
-    let service = oC4cConfig.BYD_ODATA + 'c4codata';
     var requestData = {
         Name: oData.Name,
         Binary: oData.Binary
@@ -220,7 +216,6 @@ function postServiceRequestAttachment(req, res){
  * @param res
  */
 function getServiceIssueCategoryCatalogueCategory(req, res){
-    let service = oC4cConfig.BYD_ODATA + 'c4codata';
     let path = "ServiceIssueCategoryCatalogueCategoryCollection";
     let searchPath = converstionToOdataParas(req);
     if(searchPath){
