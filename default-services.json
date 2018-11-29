@@ -16,12 +16,12 @@
   "destination": {
     "uaadomain": "authentication.eu10.hana.ondemand.com",
     "tenantmode": "dedicated",
-    "clientid": "sb-clone95311b6a43f449eeac44d27e2fb58d0a!b8209|destination-xsappname!b404",
-    "instanceid": "95311b6a-43f4-49ee-ac44-d27e2fb58d0a",
+    "clientid": "sb-clone91306e7530e54a69b4ddbfc783733593!b8209|destination-xsappname!b404",
+    "instanceid": "91306e75-30e5-4a69-b4dd-bfc783733593",
     "verificationkey": "-----BEGIN PUBLIC KEY-----MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAwThn6OO9kj0bchkOGkqYBnV1dQ3zU/xtj7Kj7nDd8nyRMcEWCtVzrzjzhiisRhlrzlRIEY82wRAZNGKMnw7cvCwNixcfcDJnjzgr2pJ+5/yDZUc0IXXyIWPZD+XdL+0EogC3d4+fqyvg/BF/F0t2hKHWr/UTXE6zrGhBKaL0d8rKfYd6olGWigFd+3+24CKI14zWVxUBtC+P9Fhngc9DRzkXqhxOK/EKn0HzSgotf5duq6Tmk9DCNM4sLW4+ERc6xzrgbeEexakabvax/Az9WZ4qhwgw+fwIhKIC7WLwCEJaRsW4m7NKkv+eJR2LKYesuQ9SVAJ3EXV86RwdnH4uAv7lQHsKURPVAQBlranSqyQu0EXs2N9OlWTxe+FyNkIvyZvoLrZl/CdlYc8AKxRm5rn2/88nkrYQ0XZSrnICM5FRWgVF2hn5KfZGwtBN85/D4Yck6B3ocMfyX7e4URUm9lRPQFUJGTXaZnEIge0R159HUwhTN1HvyXrs6uT1ZZmW+c3p47dw1+LmUf/hIf8zd+uvHQjIeHEJqxjqfyA8yqAFKRHKVFrwnwdMHIsRap2EKBhHMfeVf0P2th5C9MggYoGCvdIaIUgMBX3TtCdvGrcWML7hnyS2zkrlA8SoKJnRcRF2KxWKs355FhpHpzqyZflO5l98+O8wOsFjGpL9d0ECAwEAAQ==-----END PUBLIC KEY-----",
-    "xsappname": "clone95311b6a43f449eeac44d27e2fb58d0a!b8209|destination-xsappname!b404",
+    "xsappname": "clone91306e7530e54a69b4ddbfc783733593!b8209|destination-xsappname!b404",
     "identityzone": "wechatfra",
-    "clientsecret": "HVlnzji/ozjB86j65mmYpiXauWo=",
+    "clientsecret": "hhE8ly/D+akrz+QxgBH2+MY/Z2M=",
     "tenantid": "8eba0185-40bb-4681-bb7b-698a5dc38c47",
     "uri": "https://destination-configuration.cfapps.eu10.hana.ondemand.com",
     "url": "https://wechatfra.authentication.eu10.hana.ondemand.com"
