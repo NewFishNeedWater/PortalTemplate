@@ -4,6 +4,8 @@ const xsenv = require('@sap/xsenv');
 
 
 function getDestinationInfo(){
+
+        //this is for run time to get destination, but it has some issue when we trying to get it runtime
        /* let target = null;
 
         if (process.env.VCAP_SERVICES) {
