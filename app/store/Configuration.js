@@ -6,7 +6,7 @@ function saveDestination(oDest){
     oDestinationParent.oDestination =oDest;
 }
 
-function getDestination(){
+function getDestination(odataName){
 
     if(oDestinationParent.oDestination){
         return new Promise(function (resolve, reject) {
@@ -19,7 +19,7 @@ function getDestination(){
         });
     }else{
         return new Promise(function (resolve, reject) {
-            destination.getDestination4App().then(function(oDestination){
+            destination.getDestination4App(odataName).then(function(oDestination){
                 if(oDestination){
                     saveDestination(oDestination);
                     resolve(oDestination);

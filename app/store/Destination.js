@@ -87,7 +87,7 @@ function getAccessToken() {
         });
 }
 
-function getDestination(token) {
+function getDestination(token, odataName) {
     let oDestination = getDestinationInfo();
     console.log('token:' + token);
     if (!token) {
@@ -96,7 +96,7 @@ function getDestination(token) {
 
     return new Promise(function (resolve, reject) {
         let options = {
-            url: oDestination.uri + '/destination-configuration/v1/destinations/C4CBackEnd',
+            url: oDestination.uri + '/destination-configuration/v1/destinations/' + odataName,
             method: "GET",
             json: true,
             headers: {
@@ -118,11 +118,11 @@ function getDestination(token) {
 }
 
 
-function getDestination4App() {
+function getDestination4App(odataName) {
         console.log('Enter: getDestination4App');
         return new Promise(function (resolve, reject) {
             getAccessToken().then(function (token) {
-                getDestination(token).then(function (oDestination) {
+                getDestination(token, odataName).then(function (oDestination) {
 
                     resolve(oDestination);
 

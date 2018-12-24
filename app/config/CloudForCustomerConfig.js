@@ -4,18 +4,22 @@ const oHostAndAuthorization = {};
 
 const sURLFix= "/sap/byd/odata/v1/";
 
-const getHostAndAuthorization = () => {
+const getHostAndAuthorization = (odataName) => {
 
     return new Promise(function (resolve, reject) {
 
-        configurationService.getDestination().then(function(oDest){
+        configurationService.getDestination(odataName).then(function(oDest){
 
             if(oDest.destinationConfiguration
                 && oDest.destinationConfiguration.URL
                 && oDest.destinationConfiguration.User
                 && oDest.destinationConfiguration.Password
             ){
-                oHostAndAuthorization.sHost= oDest.destinationConfiguration.URL + sURLFix;
+                if(odataName === "C4CBackEnd"){
+                    oHostAndAuthorization.sHost= oDest.destinationConfiguration.URL + sURLFix;
+                }else if(odataName === "ECBackEnd"){
+                    oHostAndAuthorization.sHost= oDest.destinationConfiguration.URL;
+                }
                 oHostAndAuthorization.sAuthorization = 'Basic ' + new Buffer(oDest.destinationConfiguration.User + ":" +
                     oDest.destinationConfiguration.Password).toString('base64');
                 resolve(oHostAndAuthorization);

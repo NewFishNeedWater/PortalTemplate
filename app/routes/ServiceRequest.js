@@ -22,5 +22,8 @@ router.post('/postServiceRequestDescription', serviceRequestHandler.postServiceR
 router.post('/postServiceRequestAttachment', serviceRequestHandler.postServiceRequestAttachment);
 router.patch('/patchServiceRequests', serviceRequestHandler.patchServiceRequests);
 
+//same method for chat history
+router.get('/getSessionCollection', serviceRequestHandler.getSessionCollection);
+router.get('/getChatById', serviceRequestHandler.getChatById);
 
 module.exports = router;

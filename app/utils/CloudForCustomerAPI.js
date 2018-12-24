@@ -5,9 +5,9 @@ const request = require('request'),
 const requestC = request.defaults({jar: true});
 
 
-function fetchToken(service) {// festch x-csrf-token
+function fetchToken(service, odataName) {// festch x-csrf-token
     return new Promise(function (resolve, reject) {
-        oC4cConfig.getHostAndAuthorization().then(function (oHostAndAuthorization) {
+        oC4cConfig.getHostAndAuthorization(odataName).then(function (oHostAndAuthorization) {
             requestC({
                 url: oHostAndAuthorization.sHost + service + "/$metadata",
                 method: "GET",
@@ -32,10 +32,10 @@ function fetchToken(service) {// festch x-csrf-token
     });
 }
 
-function postODataData(service, path, data) {
+function postODataData(service, path, data, odataName) {
     return new Promise(function (resolve, reject) {
-        oC4cConfig.getHostAndAuthorization().then(function (oHostAndAuthorization) {
-            fetchToken(service).then(function (csrfToken) {
+        oC4cConfig.getHostAndAuthorization(odataName).then(function (oHostAndAuthorization) {
+            fetchToken(service, odataName).then(function (csrfToken) {
 
                 requestC({
                     url: oHostAndAuthorization.sHost+service + "/" + path,
@@ -60,12 +60,18 @@ function postODataData(service, path, data) {
     });
 }
 
-function fetchODataData(service, path) {
+function fetchODataData(service, path, odataName) {
     return new Promise(function (resolve, reject) {
-        oC4cConfig.getHostAndAuthorization().then(function (oHostAndAuthorization) {
-
+        oC4cConfig.getHostAndAuthorization(odataName).then(function (oHostAndAuthorization) {
+                var sUrl;
+                if(odataName === "C4CBackEnd"){
+                    sUrl = oHostAndAuthorization.sHost + service;
+                }else if(odataName === "ECBackEnd"){
+                    sUrl = oHostAndAuthorization.sHost + "/" + service;
+                }
+                console.log(sUrl + "/" + path);
                 request({
-                    url: oHostAndAuthorization.sHost+service + "/" + path,
+                    url: sUrl + "/" + path,
                     method: "GET",
                     json: true,
                     headers: {
@@ -83,10 +89,10 @@ function fetchODataData(service, path) {
     });
 }
 
-function updateODataData(service, path, data) {
+function updateODataData(service, path, data, odataName) {
     return new Promise(function (resolve, reject) {
-        oC4cConfig.getHostAndAuthorization().then(function (oHostAndAuthorization) {
-            fetchToken(service).then(function (csrfToken) {
+        oC4cConfig.getHostAndAuthorization(odataName).then(function (oHostAndAuthorization) {
+            fetchToken(service, odataName).then(function (csrfToken) {
                 requestC({
                     url: oHostAndAuthorization.sHost+service + "/" + path,
                     method: "PATCH",

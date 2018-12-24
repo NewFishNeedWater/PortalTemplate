@@ -1,31 +1,28 @@
 const oC4cAPI = require(process.cwd() + '/app/utils/CloudForCustomerAPI.js'),
     oC4cConfig = require(process.cwd() + '/app/config/CloudForCustomerConfig.js'),
+    oECAPI = require(process.cwd() + '/app/utils/ECAPI.js'),
     url = require("url");
 
 const service = 'c4codata';
+const ecService = 'cpaas.xsodata';
 /**
  * @public GET Service Request Priority code
  * @param req
  * @param res
  */
 function getServicePriorityCode (req, res){
-
-
     let path = "ServiceRequestServicePriorityCodeCollection";
     let searchPath = converstionToOdataParas(req);
     if (searchPath) {
         path = path + searchPath;
     }
-    oC4cAPI.fetchODataData(service, path).then(function (response) {
+    let odataName = "C4CBackEnd";
+    oC4cAPI.fetchODataData(service, path, odataName).then(function (response) {
         res.status(200).send(response);
     }).catch(function (reason) {
         res.send(reason);
     });
-
-
-
 }
-
 
 /**
  * @public GET Service Request LifeCycle status code
@@ -34,7 +31,8 @@ function getServicePriorityCode (req, res){
  */
 function getServiceRequestLifeCycleStatusCode (req, res){
     let path = "ServiceRequestServiceRequestLifeCycleStatusCodeCollection";
-    oC4cAPI.fetchODataData(service, path).then(function(response) {
+    let odataName = "C4CBackEnd";
+    oC4cAPI.fetchODataData(service, path, odataName).then(function(response) {
         res.status(200).send(response);
     }).catch(function(reason){
         res.send(reason);
@@ -52,7 +50,8 @@ function getProducts(req, res){
     if(searchPath){
         path = path + searchPath;
     }
-    oC4cAPI.fetchODataData(service, path).then(function(response) {
+    let odataName = "C4CBackEnd";
+    oC4cAPI.fetchODataData(service, path, odataName).then(function(response) {
         res.status(200).send(response);
     }).catch(function(reason){
         res.send(reason);
@@ -70,7 +69,8 @@ function getServiceCategory(req, res){
     if(searchPath){
         path = path + searchPath;
     }
-    oC4cAPI.fetchODataData(service, path).then(function(response) {
+    let odataName = "C4CBackEnd";
+    oC4cAPI.fetchODataData(service, path, odataName).then(function(response) {
         res.status(200).send(response);
     }).catch(function(reason){
         res.send(reason);
@@ -93,7 +93,8 @@ function getServiceRequests(req, res){
     if(searchPath){
         path = path + searchPath;
     }
-    oC4cAPI.fetchODataData(service, path).then(function(response) {
+    let odataName = "C4CBackEnd";
+    oC4cAPI.fetchODataData(service, path, odataName).then(function(response) {
         res.status(200).send(response);
     }).catch(function(reason){
         res.send(reason);
@@ -117,7 +118,8 @@ function getServiceRequestsCount(req, res){
     if(searchPath){
         path = path + searchPath;
     }
-    oC4cAPI.fetchODataData(service, path).then(function(response) {
+    let odataName = "C4CBackEnd";
+    oC4cAPI.fetchODataData(service, path, odataName).then(function(response) {
         if(typeof response === 'object'){
             return res.status(200).send(response);
         }else{
@@ -140,11 +142,11 @@ function getServiceRequestsCount(req, res){
 function postServiceRequests(req, res){
     let path = "ServiceRequestCollection";
     var oData =  req.body;
-
+    let odataName = "C4CBackEnd";
 
     //set the channel to 'internet'
     oData.DataOriginTypeCode = '4';
-    oC4cAPI.postODataData(service, path, oData).then(function(response) {
+    oC4cAPI.postODataData(service, path, oData, odataName).then(function(response) {
         res.status(201).send(response);
     }).catch(function(reason){
         res.send(reason);
@@ -160,8 +162,9 @@ function patchServiceRequests(req, res){
     var oData =  req.body;
     var baseID = oData.baseID;
     oData.baseID = undefined;
+    let odataName = "C4CBackEnd"
     let path = "ServiceRequestCollection('"  + baseID + "')";
-    oC4cAPI.updateODataData(service, path, oData).then(function(response) {
+    oC4cAPI.updateODataData(service, path, oData, odataName).then(function(response) {
         res.status(204).send(response);
     }).catch(function(reason){
         res.send(reason);
@@ -181,8 +184,9 @@ function postServiceRequestDescription(req, res){
         AuthorUUID: oData.AuthorUUID,
         Text: oData.Text
     };
+    let odataName = "C4CBackEnd";
     let path = "ServiceRequestCollection('"  + baseID + "')/ServiceRequestDescription";
-    oC4cAPI.postODataData(service, path, requestData).then(function(response) {
+    oC4cAPI.postODataData(service, path, requestData, odataName).then(function(response) {
         res.status(201).send(response);
     }).catch(function(reason){
         res.send(reason);
@@ -201,8 +205,9 @@ function postServiceRequestAttachment(req, res){
         Name: oData.Name,
         Binary: oData.Binary
     };
+    let odataName = "C4CBackEnd";
     let path = "ServiceRequestCollection('"  + baseID + "')/ServiceRequestAttachmentFolder";
-    oC4cAPI.postODataData(service, path, requestData).then(function(response) {
+    oC4cAPI.postODataData(service, path, requestData, odataName).then(function(response) {
         res.status(201).send(response);
     }).catch(function(reason){
         res.send(reason);
@@ -221,7 +226,8 @@ function getServiceIssueCategoryCatalogueCategory(req, res){
     if(searchPath){
         path = path + searchPath;
     }
-    oC4cAPI.fetchODataData(service, path).then(function(response) {
+    let odataName = "C4CBackEnd";
+    oC4cAPI.fetchODataData(service, path, odataName).then(function(response) {
         res.status(200).send(response);
     }).catch(function(reason){
         res.send(reason);
@@ -303,6 +309,44 @@ function _containsParaInList(excludingNameList, attr){
     return false;
 }
 
+/**
+ * @public GET Service Request Chat Session Collection
+ * @param req
+ * @param res
+ */
+function getSessionCollection(req, res){
+    let path = "ContactLeg?$format=json&$filter=user eq %20" + req.query.userId + "%20";
+    let odataName = "ECBackEnd";
+    oECAPI.fetchODataDataForEC(ecService, path, odataName).then(function (response) {
+        res.status(200).send(response);
+    }).catch(function (reason){
+        res.send(reason);
+    });
+}
+
+/**
+ * @public GET Service Request Chat Detail By Id
+ * @param req
+ * @param res
+ */
+function getChatById(req, res){
+    let path = "Contact(" + req.query.contactId + ")?$format=json&$expand=messages";
+    let odataName = "ECBackEnd";
+    oECAPI.fetchODataDataForEC(ecService, path, odataName).then(function(oInteractionData) {
+      if(oInteractionData.length>0){
+          let path = "ChatMessage?$format=json&$filter=sender %20 eq %20" + req.query.sendId;
+          oECAPI.fetchODataDataForEC(ecService,path,odataName).then(function(oChat){
+              res.status(200).send(oChat);
+          }).catch(function(reason){
+              res.send(reason);
+          });
+      }else{
+          res.status(200).send(null);
+      }
+    });
+}
+
+
 
 module.exports = {
     getServicePriorityCode,
@@ -315,5 +359,7 @@ module.exports = {
     patchServiceRequests,
     postServiceRequests,
     postServiceRequestDescription,
-    postServiceRequestAttachment
+    postServiceRequestAttachment,
+    getSessionCollection,
+    getChatById
 };
